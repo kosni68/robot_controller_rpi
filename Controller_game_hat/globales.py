@@ -1,4 +1,9 @@
+from joystick import *
+
 class Globale:
+
+    joystick_x = Joystick(0x4A,0,0x7FFF,500)# ads_i2c_adress,port,resolution send,dead_zone
+    joystick_y = Joystick(0x4A,1,0x7FFF,500)# ads_i2c_adress,port,resolution send,dead_zone
     
     JOYSTICK_PIN = {
     "UP" : 5,
@@ -49,3 +54,14 @@ class Globale:
     "direction_steer" : 0,
     "steer_speed" : 0
     }
+
+    PID = {
+    "P" : 0,
+    "I" : 0,
+    "D" : 0
+    }
+
+    speed_value = 0
+    speed_percentage=0
+    steer_value =0
+    steer_percentage=0

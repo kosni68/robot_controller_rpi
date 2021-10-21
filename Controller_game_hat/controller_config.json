@@ -1,1 +1,1 @@
-{"joystick_x": {"max_value": 26656, "middle_value": 13136, "min_value": 32}, "joystick_y": {"max_value": 26656, "middle_value": 13136, "min_value": 32}, "param": {"inverse": {"direction_speed": 0, "direction_steer": 1, "steer_speed": 0}}}
+{"joystick_x": {"max_value": 26656, "middle_value": 13135, "min_value": 32}, "joystick_y": {"max_value": 26656, "middle_value": 13135, "min_value": 32}, "param": {"inverse": {"direction_speed": false, "direction_steer": false, "steer_speed": false}}}
