@@ -17,6 +17,7 @@ class App(ttk.Frame):
 
         self.position_menu = 0
         self.position_param =0
+        self.position_pid = [0,0]
         self.size_title=50
         self.size_item=40
 
@@ -382,22 +383,54 @@ class App(ttk.Frame):
         self.button = ttk.Button(self.main_frame, text="Calibration joystick",style=btn)
         self.button.grid(row=1, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
 
-    def print_param_pid(self):
+    def print_param_pid(self,init=1 ,position=0):
         self.page[1] = "pid"
+
+        if init:
+            self.clear()
+            self.create_main_frame()
+
+        nb_param = 2
+        self.position_pid[0] += position
+        if self.position_pid[0] <0:
+            self.position_pid[0] = nb_param
+        elif self.position_pid[0] >nb_param:
+            self.position_pid[0] = 0
+
         # Create a Frame        
         self.labelwidget = ttk.Label(self.main_frame, text="PID", font=("-size", self.size_title,"-weight", "bold"))
         self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
-        self.label_frame.grid(row=1, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew",ipadx=60,ipady=10)
-                
-        self.frame = ttk.Frame(self.main_frame, padding=(20, 10))
-        self.frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
+        self.label_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew",ipadx=60,ipady=10)
 
-        self.label = ttk.Label(self.frame,text="P = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        self.label.pack(ipadx=0, ipady=10)        
-        self.label = ttk.Label(self.frame,text="I = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        self.label.pack(ipadx=0, ipady=10)
-        self.label = ttk.Label(self.frame,text="D = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        self.label.pack(ipadx=0, ipady=10)
+        
+        self.label = ttk.Label(self.label_frame,text="P = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")    
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_pid[0] == 0 and self.position_pid[1] == 0: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=1, padx=(10, 10), pady=(20, 10), sticky="nsew") 
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_pid[0] == 0 and self.position_pid[1] == 1: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=2, padx=(10, 10), pady=(20, 10), sticky="nsew") 
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_pid[0] == 0 and self.position_pid[1] == 2: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=3, padx=(10, 10), pady=(20, 10), sticky="nsew")           
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_pid[0] == 0 and self.position_pid[1] == 3: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=4, padx=(10, 10), pady=(20, 10), sticky="nsew")          
+        
+        
+        self.label = ttk.Label(self.label_frame,text="I = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.grid(row=1, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")    
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_pid[0] == 1: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=1, column=1, padx=(10, 10), pady=(20, 10), sticky="nsew")
+        
+        
+        self.label = ttk.Label(self.label_frame,text="D = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.grid(row=2, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")    
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_pid[0] == 2: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=2, column=1, padx=(10, 10), pady=(20, 10), sticky="nsew")
 
     def print_param_speed(self):
         self.page[1] = "speed"
@@ -586,4 +619,20 @@ class App(ttk.Frame):
         if self.page[0] == "menu":
             self.menu_start(0,direction)       
         elif self.page[0] == "parametres":
-            self.print_param_joy(0,direction)
+            if self.page[1] == "joy":
+                self.print_param_joy(0,direction)
+            elif self.page[1] == "pid":
+                self.print_param_pid(0,direction)
+
+    def manage_L1_R1(self,direction):      
+        if self.page[0] == "parametres":
+
+            if self.page[1] == "joy" and direction == 1:
+                self.print_param_pid()
+            elif self.page[1] == "joy" and direction == -1:
+                self.print_param_pid()    
+
+            elif self.page[1] == "pid" and direction == 1:
+                self.print_param_joy(1,0)
+            elif self.page[1] == "pid" and direction == -1:
+                self.print_param_joy(1,0)

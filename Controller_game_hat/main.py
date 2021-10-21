@@ -22,6 +22,10 @@ def interrupt_pin(channel):
             lcd.menu_start(1,0)
         elif channel == Globale.BUTTON_PIN["SELECT"] :            
             lcd.select()
+        elif channel == Globale.BUTTON_PIN["R1"] :
+            lcd.manage_L1_R1(-1)
+        elif channel == Globale.BUTTON_PIN["L1"] :
+            lcd.manage_L1_R1(1)
         elif channel == Globale.JOYSTICK_PIN["UP"] :
             lcd.manage_up_down(-1)
         elif channel == Globale.JOYSTICK_PIN["DOWN"] :
