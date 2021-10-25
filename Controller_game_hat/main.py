@@ -30,6 +30,10 @@ def interrupt_pin(channel):
             lcd.manage_up_down(-1)
         elif channel == Globale.JOYSTICK_PIN["DOWN"] :
             lcd.manage_up_down(1)
+        elif channel == Globale.JOYSTICK_PIN["RIGHT"] :
+            lcd.manage_left_right(1)
+        elif channel == Globale.JOYSTICK_PIN["LEFT"] :
+            lcd.manage_left_right(-1)
 
 def _map(x, in_min, in_max, out_min, out_max):
     return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)

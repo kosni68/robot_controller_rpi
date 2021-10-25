@@ -17,7 +17,8 @@ class App(ttk.Frame):
 
         self.position_menu = 0
         self.position_param =0
-        self.position_pid = [0,0]
+        self.position_v = 0
+        self.position_h = 0
         self.size_title=50
         self.size_item=40
 
@@ -52,6 +53,15 @@ class App(ttk.Frame):
         #self.create_main_frame()
         self.menu_start()
      
+    def overflow(self,limite,increment,value):
+        value += increment
+        if value <0:
+            value = limite
+        elif value >limite:
+            value = 0
+        
+        return value
+
     def update(self):
         
         if self.page[0] == "controller":
@@ -116,9 +126,11 @@ class App(ttk.Frame):
             self.clear()
             if self.position_menu ==0:
                 self.controller_widgets()
-            if self.position_menu ==1:
+            elif self.position_menu ==1:
+                self.controller_widgets()
+            elif self.position_menu ==2:
                 self.recepteur_widgets()
-            if self.position_menu ==2:
+            elif self.position_menu ==3:
                 self.parametres_widgets()
 
         elif self.page[0] == "parametres":
@@ -278,9 +290,9 @@ class App(ttk.Frame):
         self.label_R1 = tk.Label(self.frame, image=self.btn_off)
         self.label_R1.pack(pady=15)
             
-    def menu_start(self,init=1 ,position=0):
+    def menu_start(self,init=1 ,increment=0):
         # Create menu_start
-        self.page = ["menu","none"]
+        self.page[0] = "menu"
         
         if init:
         
@@ -298,34 +310,26 @@ class App(ttk.Frame):
             # Set image in canvas
             self.canvas.create_image(0,0, image=self.bg_img, anchor="nw")
             
-        nb_param = 2
-        self.position_menu += position
-        if self.position_menu <0:
-            self.position_menu = nb_param
-        elif self.position_menu >nb_param:
-            self.position_menu = 0
+        self.position_menu=self.overflow(3,increment,self.position_menu)
             
-        btn1 = 'my.TButton'
-        btn2 = 'my.TButton'
-        btn3 = 'my.TButton'
-        
-        if self.position_menu == 0:
-            btn1 = 'Accent.TButton'
-        elif self.position_menu == 1:
-            btn2 = 'Accent.TButton'
-        elif self.position_menu == 2:
-            btn3 = 'Accent.TButton'
+        btn = []
+        for i in range(4):
+            btn.append('my.TButton')
+            if self.position_menu == i:
+                btn[i] = 'Accent.TButton'
         
         # Buttons
-        self.button1 = ttk.Button(self, text="Information émetteur",style=btn1)
-        self.button2 = ttk.Button(self, text="Information récepteur",style=btn2)        
-        self.button3 = ttk.Button(self, text="Parametres",style=btn3)   
+        self.button1 = ttk.Button(self, text="Mode pilotage",style=btn[0])
+        self.button2 = ttk.Button(self, text="Information émetteur",style=btn[1])
+        self.button3 = ttk.Button(self, text="Information récepteur",style=btn[2])        
+        self.button4 = ttk.Button(self, text="Parametres",style=btn[3])   
 
-        self.canvas.create_window(1280/2, 300, anchor="center", window=self.button1)
-        self.canvas.create_window(1280/2, 400, anchor="center", window=self.button2)
-        self.canvas.create_window(1280/2, 500, anchor="center", window=self.button3)
+        self.canvas.create_window(1280/2, 200, anchor="center", window=self.button1)
+        self.canvas.create_window(1280/2, 300, anchor="center", window=self.button2)
+        self.canvas.create_window(1280/2, 400, anchor="center", window=self.button3)
+        self.canvas.create_window(1280/2, 500, anchor="center", window=self.button4)
         
-    def print_param_joy(self,init=1 ,position=0):
+    def print_param_joy(self,init=1 ,increment=0):
 
         self.page[1] = "joy"
 
@@ -348,12 +352,7 @@ class App(ttk.Frame):
         self.frame = ttk.Frame(self.label_frame, padding=(20, 10))
         self.frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
 
-        nb_param = 3
-        self.position_param += position
-        if self.position_param <0:
-            self.position_param = nb_param
-        elif self.position_param >nb_param:
-            self.position_param = 0
+        self.position_param=self.overflow(3,increment,self.position_param)
 
         self.label = tk.Label(self.frame,text="Speed direction",justify="left",font=("-size", self.size_item, "-weight", "bold"))
         if self.position_param == 0: self.label.config(bg= "#56C7FC", fg= "black")
@@ -382,84 +381,130 @@ class App(ttk.Frame):
              
         self.button = ttk.Button(self.main_frame, text="Calibration joystick",style=btn)
         self.button.grid(row=1, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
+    
+    def print_param_mode_normal(self,init=1 ,increment_y=0,increment_x=0):
+        self.page[1] = "normal"
 
-    def print_param_pid(self,init=1 ,position=0):
+        if init:
+            self.clear()
+            self.create_main_frame()
+
+        self.position_v=self.overflow(1,increment_y,self.position_v)
+        self.position_h=self.overflow(1,increment_x,self.position_h)
+
+        # Create a Frame        
+        self.labelwidget = ttk.Label(self.main_frame, text="Coeff mode normal", font=("-size", self.size_title,"-weight", "bold"))
+        self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
+        self.label_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew",ipadx=60,ipady=10)
+
+        
+        self.label = ttk.Label(self.label_frame,text="Speed = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.grid(row=0, column=0, padx=(5), pady=(20, 10), sticky="nsew")    
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 0 and self.position_h == 0: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=1, padx=(5), pady=(20, 10), sticky="nsew") 
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 0 and self.position_h == 1: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=2, padx=(5), pady=(20, 10), sticky="nsew")          
+        self.label = tk.Label(self.label_frame,text="%",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.grid(row=0, column=3, padx=(0), pady=(20, 10), sticky="nsew")          
+        
+        self.label = ttk.Label(self.label_frame,text="Steer = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.grid(row=1, column=0, padx=(5), pady=(20, 10), sticky="nsew")    
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 1 and self.position_h == 0: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=1, column=1, padx=(5), pady=(20, 10), sticky="nsew") 
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 1 and self.position_h == 1: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=1, column=2, padx=(5), pady=(20, 10), sticky="nsew")          
+        self.label = tk.Label(self.label_frame,text="%",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.grid(row=1, column=3, padx=(0), pady=(20, 10), sticky="nsew")    
+
+    def print_param_mode_marteau(self,init=1 ,increment_y=0,increment_x=0):
         self.page[1] = "pid"
 
         if init:
             self.clear()
             self.create_main_frame()
 
-        nb_param = 2
-        self.position_pid[0] += position
-        if self.position_pid[0] <0:
-            self.position_pid[0] = nb_param
-        elif self.position_pid[0] >nb_param:
-            self.position_pid[0] = 0
+        self.position_v=self.overflow(4,increment_y,self.position_v)
+        self.position_h=self.overflow(3,increment_x,self.position_h)
+
+        if self.position_v == 0 or self.position_v == 1:
+            self.position_h=self.overflow(1,0,self.position_h)
+
+        # Create a Frame        
+        self.labelwidget = ttk.Label(self.main_frame, text="Coeff mode marteau", font=("-size", self.size_title,"-weight", "bold"))
+        self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
+        self.label_frame.grid(row=0, column=0, padx=(20, 10), pady=(10, 10), sticky="nsew",ipadx=60,ipady=0)
+        
+        self.label = ttk.Label(self.label_frame,text="Speed = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.grid(row=0, column=0, padx=(5), pady=(10, 10), sticky="nsew")    
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 0 and self.position_h == 0: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=1, padx=(5), pady=(10, 10), sticky="nsew") 
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 0 and self.position_h == 1: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=2, padx=(5), pady=(10, 10), sticky="nsew")          
+        self.label = tk.Label(self.label_frame,text="%",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.grid(row=0, column=3, padx=(0), pady=(10, 10), sticky="nsew")          
+        
+        self.label = ttk.Label(self.label_frame,text="Steer = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.grid(row=1, column=0, padx=(5), pady=(10, 10), sticky="nsew")    
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 1 and self.position_h == 0: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=1, column=1, padx=(5), pady=(10, 10), sticky="nsew") 
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 1 and self.position_h == 1: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=1, column=2, padx=(5), pady=(10, 10), sticky="nsew")          
+        self.label = tk.Label(self.label_frame,text="%",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.grid(row=1, column=3, padx=(0), pady=(10, 10), sticky="nsew")   
 
         # Create a Frame        
         self.labelwidget = ttk.Label(self.main_frame, text="PID", font=("-size", self.size_title,"-weight", "bold"))
         self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
-        self.label_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew",ipadx=60,ipady=10)
+        self.label_frame.grid(row=1, column=0, padx=(20, 10), pady=(10, 10), sticky="nsew",ipadx=60,ipady=10)
 
         
         self.label = ttk.Label(self.label_frame,text="P = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        self.label.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")    
+        self.label.grid(row=0, column=0, padx=(20, 10), pady=(10, 10), sticky="nsew")    
         self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        if self.position_pid[0] == 0 and self.position_pid[1] == 0: self.label.config(bg= "#56C7FC", fg= "black")
-        self.label.grid(row=0, column=1, padx=(10, 10), pady=(20, 10), sticky="nsew") 
+        if self.position_v == 2 and self.position_h == 0: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew") 
         self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        if self.position_pid[0] == 0 and self.position_pid[1] == 1: self.label.config(bg= "#56C7FC", fg= "black")
-        self.label.grid(row=0, column=2, padx=(10, 10), pady=(20, 10), sticky="nsew") 
+        if self.position_v == 2 and self.position_h == 1: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=2, padx=(10, 10), pady=(10, 10), sticky="nsew") 
         self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        if self.position_pid[0] == 0 and self.position_pid[1] == 2: self.label.config(bg= "#56C7FC", fg= "black")
-        self.label.grid(row=0, column=3, padx=(10, 10), pady=(20, 10), sticky="nsew")           
+        if self.position_v == 2 and self.position_h == 2: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=3, padx=(10, 10), pady=(10, 10), sticky="nsew")           
         self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        if self.position_pid[0] == 0 and self.position_pid[1] == 3: self.label.config(bg= "#56C7FC", fg= "black")
-        self.label.grid(row=0, column=4, padx=(10, 10), pady=(20, 10), sticky="nsew")          
+        if self.position_v == 2 and self.position_h == 3: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=0, column=4, padx=(10, 10), pady=(10, 10), sticky="nsew")          
         
         
         self.label = ttk.Label(self.label_frame,text="I = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        self.label.grid(row=1, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")    
+        self.label.grid(row=1, column=0, padx=(20, 10), pady=(10, 10), sticky="nsew")    
         self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        if self.position_pid[0] == 1: self.label.config(bg= "#56C7FC", fg= "black")
-        self.label.grid(row=1, column=1, padx=(10, 10), pady=(20, 10), sticky="nsew")
+        if self.position_v == 3: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=1, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
         
         
         self.label = ttk.Label(self.label_frame,text="D = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        self.label.grid(row=2, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")    
+        self.label.grid(row=2, column=0, padx=(20, 10), pady=(10, 10), sticky="nsew")    
         self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        if self.position_pid[0] == 2: self.label.config(bg= "#56C7FC", fg= "black")
-        self.label.grid(row=2, column=1, padx=(10, 10), pady=(20, 10), sticky="nsew")
-
-    def print_param_speed(self):
-        self.page[1] = "speed"
-        # Create a Frame          
-        self.labelwidget = ttk.Label(self.main_frame, text="Speed", font=("-size", self.size_title,"-weight", "bold"))
-        self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
-        self.label_frame.grid(row=2, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew",ipadx=60,ipady=10)
-                
-        self.frame = ttk.Frame(self.label_frame, padding=(20, 10))
-        self.frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
-
-        self.label = ttk.Label(self.frame,text="Speed = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        self.label.pack(ipadx=0, ipady=10)        
-        self.label = ttk.Label(self.frame,text="Steer = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        self.label.pack(ipadx=0, ipady=10)
-        self.label = ttk.Label(self.frame,text="autre = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        self.label.pack(ipadx=0, ipady=10)
+        if self.position_v == 4: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=2, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
     def parametres_widgets(self):
-        # Create parametres_widgets
         
         self.page[0] = "parametres"
           
         self.create_main_frame()
 
         if self.page[1] == "pid":
-            self.print_param_pid()
-        elif self.page[1] == "speed":
-            self.print_param_speed()
+            self.print_param_mode_marteau()
+        elif self.page[1] == "normal":
+            self.print_param_mode_normal()
         else:
             self.print_param_joy()
 
@@ -622,17 +667,31 @@ class App(ttk.Frame):
             if self.page[1] == "joy":
                 self.print_param_joy(0,direction)
             elif self.page[1] == "pid":
-                self.print_param_pid(0,direction)
+                self.print_param_mode_marteau(0,direction,0)
+            elif self.page[1] == "normal":
+                self.print_param_mode_normal(0,direction,0)
 
     def manage_L1_R1(self,direction):      
         if self.page[0] == "parametres":
 
             if self.page[1] == "joy" and direction == 1:
-                self.print_param_pid()
+                self.print_param_mode_marteau()
             elif self.page[1] == "joy" and direction == -1:
-                self.print_param_pid()    
+                self.print_param_mode_normal()    
 
             elif self.page[1] == "pid" and direction == 1:
-                self.print_param_joy(1,0)
+                self.print_param_mode_normal(1,0,0)
             elif self.page[1] == "pid" and direction == -1:
                 self.print_param_joy(1,0)
+
+            elif self.page[1] == "normal" and direction == 1:
+                self.print_param_joy(1,0)
+            elif self.page[1] == "normal" and direction == -1:
+                self.print_param_mode_marteau(1,0,0)
+
+    def manage_left_right(self,direction):      
+        if self.page[0] == "parametres":
+            if self.page[1] == "pid":
+                self.print_param_mode_marteau(0,0,direction)
+            elif self.page[1] == "normal":
+                self.print_param_mode_normal(0,0,direction)
