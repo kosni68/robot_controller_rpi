@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from globales import *
 from bluetooth_rpi_thread import *
-from config import *
+from Config.config import *
 
 class App(ttk.Frame):
     
@@ -35,6 +35,12 @@ class App(ttk.Frame):
         self.var_5 = tk.DoubleVar(value=75.0)
        
         
+        self.coef_speed_normal = [tk.StringVar(value="0"),tk.StringVar(value="0")]
+        self.coef_steer_normal = [tk.StringVar(value="0"),tk.StringVar(value="0")]
+
+        self.coef_speed_hammer = [tk.StringVar(value="0"),tk.StringVar(value="0")]
+        self.coef_steer_hammer = [tk.StringVar(value="0"),tk.StringVar(value="0")]
+
         self.joy_real_x = tk.StringVar(value="X = ")
         self.joy_real_y = tk.StringVar(value="Y = ")
         self.joy_speed = tk.StringVar(value="Speed = ")
@@ -89,6 +95,23 @@ class App(ttk.Frame):
             self.joy_real_x.set(value="X = "+str(Globale.joystick_x.current_read_value))
             self.joy_real_y.set(value="Y = "+str(Globale.joystick_y.current_read_value))
             self.device_data.set(value=Bluetooth_rpi.data)
+
+    
+        elif self.page[0] == "parametres":
+
+            if self.page[1] == "normal":
+                self.coef_speed_normal[0].set(value=str(Globale.coef_normal["speed_1"]))
+                self.coef_speed_normal[1].set(value=str(Globale.coef_normal["speed_10"]))
+
+                self.coef_steer_normal[0].set(value=str(Globale.coef_normal["steer_1"]))
+                self.coef_steer_normal[1].set(value=str(Globale.coef_normal["steer_10"]))
+
+            elif self.page[1] == "hammer":
+                self.coef_speed_hammer[0].set(value=str(Globale.coef_hammer["speed_1"]))
+                self.coef_speed_hammer[1].set(value=str(Globale.coef_hammer["speed_10"]))
+
+                self.coef_steer_hammer[0].set(value=str(Globale.coef_hammer["steer_1"]))
+                self.coef_steer_hammer[1].set(value=str(Globale.coef_hammer["steer_10"]))
 
     def create_main_frame(self):
 
@@ -150,7 +173,37 @@ class App(ttk.Frame):
                 if self.position_param ==3:
                     self.compteur_str.set(value=3)
                     self.calibration_auto("no_move_x")
-                
+            
+            elif self.page[1] == "normal":
+                if self.position_v == 0 and self.position_h == 0 : 
+                    Globale.coef_normal["speed_1"]+=1
+                    Globale.coef_normal["speed_1"]=self.overflow(9,0,Globale.coef_normal["speed_1"])
+                elif self.position_v == 0 and self.position_h == 1 : 
+                    Globale.coef_normal["speed_10"]+=1
+                    Globale.coef_normal["speed_10"]=self.overflow(9,0,Globale.coef_normal["speed_10"])
+                elif self.position_v == 1 and self.position_h == 0 : 
+                    Globale.coef_normal["steer_1"]+=1
+                    Globale.coef_normal["steer_1"]=self.overflow(9,0,Globale.coef_normal["steer_1"])
+                elif self.position_v == 1 and self.position_h == 1 : 
+                    Globale.coef_normal["steer_10"]+=1
+                    Globale.coef_normal["steer_10"]=self.overflow(9,0,Globale.coef_normal["steer_10"])
+            
+            elif self.page[1] == "hammer":
+                if self.position_v == 0 and self.position_h == 0 : 
+                    Globale.coef_hammer["speed_1"]+=1
+                    Globale.coef_hammer["speed_1"]=self.overflow(9,0,Globale.coef_hammer["speed_1"])
+                elif self.position_v == 0 and self.position_h == 1 : 
+                    Globale.coef_hammer["speed_10"]+=1
+                    Globale.coef_hammer["speed_10"]=self.overflow(9,0,Globale.coef_hammer["speed_10"])
+                elif self.position_v == 1 and self.position_h == 0 : 
+                    Globale.coef_hammer["steer_1"]+=1
+                    Globale.coef_hammer["steer_1"]=self.overflow(9,0,Globale.coef_hammer["steer_1"])
+                elif self.position_v == 1 and self.position_h == 1 : 
+                    Globale.coef_hammer["steer_10"]+=1
+                    Globale.coef_hammer["steer_10"]=self.overflow(9,0,Globale.coef_hammer["steer_10"])
+            
+                save_param()
+              
     def controller_widgets(self):
         # Createcontroller_widgets
         self.page[0] = "controller"
@@ -400,10 +453,10 @@ class App(ttk.Frame):
         
         self.label = ttk.Label(self.label_frame,text="Speed = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
         self.label.grid(row=0, column=0, padx=(5), pady=(20, 10), sticky="nsew")    
-        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label = tk.Label(self.label_frame,textvariable=self.coef_speed_normal[0],justify="left",font=("-size", self.size_item, "-weight", "bold"))
         if self.position_v == 0 and self.position_h == 0: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=0, column=1, padx=(5), pady=(20, 10), sticky="nsew") 
-        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label = tk.Label(self.label_frame,textvariable=self.coef_speed_normal[1],justify="left",font=("-size", self.size_item, "-weight", "bold"))
         if self.position_v == 0 and self.position_h == 1: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=0, column=2, padx=(5), pady=(20, 10), sticky="nsew")          
         self.label = tk.Label(self.label_frame,text="%",justify="left",font=("-size", self.size_item, "-weight", "bold"))
@@ -411,27 +464,30 @@ class App(ttk.Frame):
         
         self.label = ttk.Label(self.label_frame,text="Steer = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
         self.label.grid(row=1, column=0, padx=(5), pady=(20, 10), sticky="nsew")    
-        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label = tk.Label(self.label_frame,textvariable=self.coef_steer_normal[0],justify="left",font=("-size", self.size_item, "-weight", "bold"))
         if self.position_v == 1 and self.position_h == 0: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=1, column=1, padx=(5), pady=(20, 10), sticky="nsew") 
-        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label = tk.Label(self.label_frame,textvariable=self.coef_steer_normal[1],justify="left",font=("-size", self.size_item, "-weight", "bold"))
         if self.position_v == 1 and self.position_h == 1: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=1, column=2, padx=(5), pady=(20, 10), sticky="nsew")          
         self.label = tk.Label(self.label_frame,text="%",justify="left",font=("-size", self.size_item, "-weight", "bold"))
         self.label.grid(row=1, column=3, padx=(0), pady=(20, 10), sticky="nsew")    
 
     def print_param_mode_marteau(self,init=1 ,increment_y=0,increment_x=0):
-        self.page[1] = "pid"
+        self.page[1] = "hammer"
 
         if init:
             self.clear()
             self.create_main_frame()
 
+
         self.position_v=self.overflow(4,increment_y,self.position_v)
-        self.position_h=self.overflow(3,increment_x,self.position_h)
 
         if self.position_v == 0 or self.position_v == 1:
-            self.position_h=self.overflow(1,0,self.position_h)
+            self.position_h=self.overflow(1,increment_x,self.position_h)
+        else:
+            self.position_h=self.overflow(3,increment_x,self.position_h)
+
 
         # Create a Frame        
         self.labelwidget = ttk.Label(self.main_frame, text="Coeff mode marteau", font=("-size", self.size_title,"-weight", "bold"))
@@ -440,10 +496,10 @@ class App(ttk.Frame):
         
         self.label = ttk.Label(self.label_frame,text="Speed = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
         self.label.grid(row=0, column=0, padx=(5), pady=(10, 10), sticky="nsew")    
-        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label = tk.Label(self.label_frame,textvariable=self.coef_speed_hammer[0],justify="left",font=("-size", self.size_item, "-weight", "bold"))
         if self.position_v == 0 and self.position_h == 0: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=0, column=1, padx=(5), pady=(10, 10), sticky="nsew") 
-        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label = tk.Label(self.label_frame,textvariable=self.coef_speed_hammer[1],justify="left",font=("-size", self.size_item, "-weight", "bold"))
         if self.position_v == 0 and self.position_h == 1: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=0, column=2, padx=(5), pady=(10, 10), sticky="nsew")          
         self.label = tk.Label(self.label_frame,text="%",justify="left",font=("-size", self.size_item, "-weight", "bold"))
@@ -451,10 +507,10 @@ class App(ttk.Frame):
         
         self.label = ttk.Label(self.label_frame,text="Steer = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
         self.label.grid(row=1, column=0, padx=(5), pady=(10, 10), sticky="nsew")    
-        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label = tk.Label(self.label_frame,textvariable=self.coef_steer_hammer[0],justify="left",font=("-size", self.size_item, "-weight", "bold"))
         if self.position_v == 1 and self.position_h == 0: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=1, column=1, padx=(5), pady=(10, 10), sticky="nsew") 
-        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        self.label = tk.Label(self.label_frame,textvariable=self.coef_steer_hammer[1],justify="left",font=("-size", self.size_item, "-weight", "bold"))
         if self.position_v == 1 and self.position_h == 1: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=1, column=2, padx=(5), pady=(10, 10), sticky="nsew")          
         self.label = tk.Label(self.label_frame,text="%",justify="left",font=("-size", self.size_item, "-weight", "bold"))
@@ -485,15 +541,33 @@ class App(ttk.Frame):
         self.label = ttk.Label(self.label_frame,text="I = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
         self.label.grid(row=1, column=0, padx=(20, 10), pady=(10, 10), sticky="nsew")    
         self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        if self.position_v == 3: self.label.config(bg= "#56C7FC", fg= "black")
+        if self.position_v == 3 and self.position_h == 0: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=1, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 3 and self.position_h == 1: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=1, column=2, padx=(10, 10), pady=(10, 10), sticky="nsew") 
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 3 and self.position_h == 2: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=1, column=3, padx=(10, 10), pady=(10, 10), sticky="nsew")           
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 3 and self.position_h == 3: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=1, column=4, padx=(10, 10), pady=(10, 10), sticky="nsew")
         
         
         self.label = ttk.Label(self.label_frame,text="D = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
         self.label.grid(row=2, column=0, padx=(20, 10), pady=(10, 10), sticky="nsew")    
         self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        if self.position_v == 4: self.label.config(bg= "#56C7FC", fg= "black")
+        if self.position_v == 4 and self.position_h == 0: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=2, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 4 and self.position_h == 1: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=2, column=2, padx=(10, 10), pady=(10, 10), sticky="nsew") 
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 4 and self.position_h == 2: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=2, column=3, padx=(10, 10), pady=(10, 10), sticky="nsew")           
+        self.label = tk.Label(self.label_frame,text="0",justify="left",font=("-size", self.size_item, "-weight", "bold"))
+        if self.position_v == 4 and self.position_h == 3: self.label.config(bg= "#56C7FC", fg= "black")
+        self.label.grid(row=2, column=4, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
     def parametres_widgets(self):
         
@@ -501,7 +575,7 @@ class App(ttk.Frame):
           
         self.create_main_frame()
 
-        if self.page[1] == "pid":
+        if self.page[1] == "hammer":
             self.print_param_mode_marteau()
         elif self.page[1] == "normal":
             self.print_param_mode_normal()
@@ -666,7 +740,7 @@ class App(ttk.Frame):
         elif self.page[0] == "parametres":
             if self.page[1] == "joy":
                 self.print_param_joy(0,direction)
-            elif self.page[1] == "pid":
+            elif self.page[1] == "hammer":
                 self.print_param_mode_marteau(0,direction,0)
             elif self.page[1] == "normal":
                 self.print_param_mode_normal(0,direction,0)
@@ -679,9 +753,9 @@ class App(ttk.Frame):
             elif self.page[1] == "joy" and direction == -1:
                 self.print_param_mode_normal()    
 
-            elif self.page[1] == "pid" and direction == 1:
+            elif self.page[1] == "hammer" and direction == 1:
                 self.print_param_mode_normal(1,0,0)
-            elif self.page[1] == "pid" and direction == -1:
+            elif self.page[1] == "hammer" and direction == -1:
                 self.print_param_joy(1,0)
 
             elif self.page[1] == "normal" and direction == 1:
@@ -691,7 +765,7 @@ class App(ttk.Frame):
 
     def manage_left_right(self,direction):      
         if self.page[0] == "parametres":
-            if self.page[1] == "pid":
+            if self.page[1] == "hammer":
                 self.print_param_mode_marteau(0,0,direction)
             elif self.page[1] == "normal":
                 self.print_param_mode_normal(0,0,direction)

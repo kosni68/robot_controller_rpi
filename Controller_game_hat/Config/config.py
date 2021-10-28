@@ -10,15 +10,17 @@ def save_param():
                                     "middle_value": Globale.joystick_x.middle_value,
                                     "min_value": Globale.joystick_x.min_value
                                     },
-                     "param": {"inverse": Globale.inverse
+                     "param": {"inverse": Globale.inverse,
+                               "coef_normal": Globale.coef_normal,
+                               "coef_hammer": Globale.coef_hammer,
                             },
                 }
 
-    with open('controller_config.json', 'w') as file:
+    with open('Config/controller_config.json', 'w') as file:
         json.dump(struct_config, file)
 
 def load_param():
-    with open('controller_config.json', 'r') as file:
+    with open('Config/controller_config.json', 'r') as file:
         datadict = json.load(file)
         
     Globale.joystick_x.max_value=datadict["joystick_x"]["max_value"]
@@ -30,3 +32,5 @@ def load_param():
     Globale.joystick_y.min_value=datadict["joystick_y"]["min_value"]
     
     Globale.inverse=datadict["param"]["inverse"]
+    Globale.coef_normal=datadict["param"]["coef_normal"]
+    Globale.coef_hammer=datadict["param"]["coef_hammer"]

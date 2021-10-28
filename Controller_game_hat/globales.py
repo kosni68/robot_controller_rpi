@@ -61,6 +61,20 @@ class Globale:
     "D" : 0
     }
 
+    coef_normal = {
+    "speed_1" : 0,
+    "speed_10" : 0,
+    "steer_1" : 0,
+    "steer_10" : 0
+    }
+
+    coef_hammer = {
+    "speed_1" : 0,
+    "speed_10" : 0,
+    "steer_1" : 0,
+    "steer_10" : 0
+    }
+
     speed_value = 0
     speed_percentage=0
     steer_value =0

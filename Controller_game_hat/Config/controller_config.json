@@ -14,6 +14,18 @@
             "direction_speed": true,
             "direction_steer": false,
             "steer_speed": false
+        },
+        "coef_normal": {
+            "speed_1": 3,
+            "speed_10": 3,
+            "steer_1": 5,
+            "steer_10": 5
+        },
+        "coef_hammer": {
+            "speed_1": 2,
+            "speed_10": 2,
+            "steer_1": 4,
+            "steer_10": 4
         }
     }
 }

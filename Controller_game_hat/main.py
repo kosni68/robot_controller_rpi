@@ -3,7 +3,7 @@ import threading
 
 from tkinter_game_hat import *
 from globales import *
-from config import *
+from Config.config import *
 
     
 def interrupt_pin(channel):
@@ -60,7 +60,11 @@ def read_joystick():
         Globale.steer_percentage = _map(Globale.steer_value,0,Globale.joystick_x.resolution,-100,100)
 
 def setup():
-    load_param()
+    try :
+        load_param()
+    except:
+        print("Erreur load_param")
+        
     GPIO.setwarnings(True)
     GPIO.setmode(GPIO.BCM)
     
