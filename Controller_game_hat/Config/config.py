@@ -2,6 +2,13 @@ from globales import *
 import json
 
 def save_param():
+
+    pid = {
+    "P" : Globale.P,
+    "I" : Globale.I,
+    "D" : Globale.D
+    }
+
     struct_config = {"joystick_x": {"max_value": Globale.joystick_x.max_value,
                                     "middle_value": Globale.joystick_x.middle_value,
                                     "min_value": Globale.joystick_x.min_value
@@ -13,6 +20,7 @@ def save_param():
                      "param": {"inverse": Globale.inverse,
                                "coef_normal": Globale.coef_normal,
                                "coef_hammer": Globale.coef_hammer,
+                               "pid": pid,
                             },
                 }
 
@@ -34,3 +42,8 @@ def load_param():
     Globale.inverse=datadict["param"]["inverse"]
     Globale.coef_normal=datadict["param"]["coef_normal"]
     Globale.coef_hammer=datadict["param"]["coef_hammer"]
+    
+    pid=datadict["param"]["pid"]
+    Globale.P=pid["P"]
+    Globale.I=pid["I"]
+    Globale.D=pid["D"]

@@ -4,7 +4,6 @@ import threading
 from tkinter_game_hat import *
 from globales import *
 from Config.config import *
-
     
 def interrupt_pin(channel):
     
@@ -86,7 +85,6 @@ def loop():
         read_joystick()
         lcd.update()
         lcd.manage_mode()
-
         
 if __name__ == "__main__":
     

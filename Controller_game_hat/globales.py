@@ -44,35 +44,45 @@ class Globale:
     "L1" : 0
     }
         
-    joystick_calibration = {
-    "X" : 512,
-    "Y" : 512
-    }
-    
     inverse = {
     "direction_speed" : 0,
     "direction_steer" : 0,
     "steer_speed" : 0
     }
 
-    PID = {
-    "P" : 0,
-    "I" : 0,
-    "D" : 0
+    P = {
+    "1000" : 0,
+    "100" : 0,
+    "10" : 0,
+    "1" : 0
+    }
+
+    I = {
+    "1000" : 0,
+    "100" : 0,
+    "10" : 0,
+    "1" : 0
+    }
+
+    D = {
+    "1000" : 0,
+    "100" : 0,
+    "10" : 0,
+    "1" : 0
     }
 
     coef_normal = {
-    "speed_1" : 0,
     "speed_10" : 0,
-    "steer_1" : 0,
-    "steer_10" : 0
+    "speed_1" : 0,
+    "steer_10" : 0,
+    "steer_1" : 0
     }
 
     coef_hammer = {
-    "speed_1" : 0,
     "speed_10" : 0,
-    "steer_1" : 0,
-    "steer_10" : 0
+    "speed_1" : 0,
+    "steer_10" : 0,
+    "steer_1" : 0
     }
 
     speed_value = 0

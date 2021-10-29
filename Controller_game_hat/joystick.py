@@ -21,7 +21,6 @@ class Joystick():
             
     def calibration_middle_joystick(self,tempo_time,time_print):
         
-        
         middle_value_moyenne=self.ads1115.analog_read(self.port_ads)
         iterrator=1
         
@@ -33,7 +32,6 @@ class Joystick():
             
         self.middle_value = round(middle_value_moyenne/iterrator)
         
-    
     def calibration_max_min_joystick(self,tempo_time,time_print):
         
         max_value=self.ads1115.analog_read(self.port_ads)
