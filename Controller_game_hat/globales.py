@@ -85,6 +85,8 @@ class Globale:
     "steer_1" : 0
     }
 
+    mode_robot = 0 # 0=normal 1=hammer
+
     speed_value = 0
     speed_percentage=0
     steer_value =0

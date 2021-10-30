@@ -15,6 +15,13 @@ class App(ttk.Frame):
         self.switch_on = tk.PhotoImage(file="img/switch-on.png")
         self.switch_off = tk.PhotoImage(file="img/switch-off.png")
 
+        self.battery_100 = tk.PhotoImage(file="img/battery_100.png")
+        self.battery_80 = tk.PhotoImage(file="img/battery_80.png")
+        self.battery_60 = tk.PhotoImage(file="img/battery_60.png")
+        self.battery_40 = tk.PhotoImage(file="img/battery_40.png")
+        self.battery_20 = tk.PhotoImage(file="img/battery_20.png")
+        self.battery_0 = tk.PhotoImage(file="img/battery_0.png")
+
         self.position_menu = 0
         self.position_param =0
         self.position_v = 0
@@ -24,7 +31,7 @@ class App(ttk.Frame):
 
         # Create value lists
         self.page = ["",""]
-        #self.page_list = ["menu", "controller","receiver","parametres","cal_auto"]
+        #self.page_list = ["menu", "controller","robot","parametres","cal_auto"]
 
         # Create control variables
         self.var_0 = tk.BooleanVar()
@@ -43,6 +50,8 @@ class App(ttk.Frame):
         self.pid_i = [tk.StringVar(value="0"),tk.StringVar(value="0"),tk.StringVar(value="0"),tk.StringVar(value="0")]
         self.pid_d = [tk.StringVar(value="0"),tk.StringVar(value="0"),tk.StringVar(value="0"),tk.StringVar(value="0")]
 
+        self.mode_robot = tk.StringVar(value="")
+
         self.joy_real_x = tk.StringVar(value="X = ")
         self.joy_real_y = tk.StringVar(value="Y = ")
         self.joy_speed = tk.StringVar(value="Speed = ")
@@ -58,7 +67,7 @@ class App(ttk.Frame):
         # Create widgets :
         #self.emetteur_widgets()
         #self.create_main_frame()
-        self.menu_start()
+        self.print_menu_start()
      
     def overflow(self,limite,increment,value):
         value += increment
@@ -70,8 +79,16 @@ class App(ttk.Frame):
         return value
 
     def update(self):
-        
-        if self.page[0] == "controller":
+
+        if self.page[0] == "pilotage":
+            if Globale.mode_robot == 0:
+                self.mode_robot.set(value="L1< NORMAL >R1")
+            elif Globale.mode_robot == 1:
+                self.mode_robot.set(value="L1< HAMMER >R1")
+            else:
+                self.mode_robot.set(value="L1< ERREUR >R1")
+
+        elif self.page[0] == "controller":
             try :
                 if Globale.button_state["A"] == True:self.label_A.configure(image=self.btn_on)
                 else:self.label_A.configure(image=self.btn_off)
@@ -131,8 +148,8 @@ class App(ttk.Frame):
 
     def create_main_frame(self):
 
-        self.main_frame = ttk.Frame(self, padding=(20, 10))
-        self.main_frame.pack(pady=20)
+        self.main_frame = ttk.Frame(self, padding=(10, 10))
+        self.main_frame.pack(pady=10)
         
         # Create a main Fram        
         #self.label_bg = ttk.Label(self, image=self.bg_img)
@@ -164,13 +181,13 @@ class App(ttk.Frame):
         if self.page[0] == "menu":
             self.clear()
             if self.position_menu ==0:
-                self.controller_widgets()
+                self.print_info_pilotage()
             elif self.position_menu ==1:
-                self.controller_widgets()
+                self.print_info_controller()
             elif self.position_menu ==2:
-                self.recepteur_widgets()
+                self.print_info_robot()
             elif self.position_menu ==3:
-                self.parametres_widgets()
+                self.print_param()
 
         elif self.page[0] == "parametres":
             if self.page[1] == "joy":
@@ -241,8 +258,62 @@ class App(ttk.Frame):
             
                 save_param()
               
-    def controller_widgets(self):
-        # Createcontroller_widgets
+    def print_info_pilotage(self):
+        self.page[0] = "pilotage"
+        self.update()
+
+        self.create_main_frame()
+
+        self.mode_frame = tk.Frame(self.main_frame)
+        self.mode_frame.grid(row=0, column=0, padx=0, pady=0, sticky="nsew")
+
+        # Create a Frame mode
+
+        self.labelwidget = ttk.Label(self.mode_frame, text="Mode", font=("-size", self.size_title,"-weight", "bold"))
+
+        self.label_frame = tk.LabelFrame(self.mode_frame, labelwidget=self.labelwidget,bd=5)
+        self.label_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+                
+        self.label = ttk.Label(
+            self.label_frame,
+            textvariable=self.mode_robot,
+            justify="center",
+            font=("-size", self.size_item, "-weight", "bold"),
+        )
+        self.label.pack(ipadx=0, ipady=10)
+
+        # Create a Frame battery
+        
+        self.labelwidget = ttk.Label(self.mode_frame, text="Battery",  font=("-size", self.size_title,"-weight", "bold"),)
+        
+        self.label_frame = tk.LabelFrame(self.mode_frame, labelwidget=self.labelwidget, bd=5)
+        self.label_frame.grid(row=0, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
+
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=0, padx=(0, 0), pady=(20, 10), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,text="Robot",justify="center",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.pack(ipadx=0, ipady=10)        
+        self.label = ttk.Label(self.frame,text="Controller",justify="center",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.pack(ipadx=0, ipady=10)
+
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=2, padx=(0, 0), pady=(20, 10), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,text="4.5V",justify="center",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.pack(ipadx=0, ipady=10)        
+        self.label = ttk.Label(self.frame,text="2.1V",justify="center",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.pack(ipadx=0, ipady=10)
+
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=3, padx=(0, 0), pady=(20, 10), sticky="nsew")
+
+        self.label_Y = tk.Label(self.frame, image=self.battery_100)
+        self.label_Y.pack(pady=15)
+        self.label_B = tk.Label(self.frame, image=self.battery_20)
+        self.label_B.pack(pady=15)
+
+    def print_info_controller(self):
         self.page[0] = "controller"
 
         self.create_main_frame()
@@ -380,8 +451,7 @@ class App(ttk.Frame):
         self.label_R1 = tk.Label(self.frame, image=self.btn_off)
         self.label_R1.pack(pady=15)
             
-    def menu_start(self,init=1 ,increment=0):
-        # Create menu_start
+    def print_menu_start(self,init=1 ,increment=0):
         self.page[0] = "menu"
         
         if init:
@@ -410,8 +480,8 @@ class App(ttk.Frame):
         
         # Buttons
         self.button1 = ttk.Button(self, text="Mode pilotage",style=btn[0])
-        self.button2 = ttk.Button(self, text="Information émetteur",style=btn[1])
-        self.button3 = ttk.Button(self, text="Information récepteur",style=btn[2])        
+        self.button2 = ttk.Button(self, text="Info controller",style=btn[1])
+        self.button3 = ttk.Button(self, text="Info robot",style=btn[2])        
         self.button4 = ttk.Button(self, text="Parametres",style=btn[3])   
 
         self.canvas.create_window(1280/2, 200, anchor="center", window=self.button1)
@@ -478,6 +548,7 @@ class App(ttk.Frame):
         if init:
             self.clear()
             self.create_main_frame()
+            self.update()
 
         self.position_v=self.overflow(1,increment_y,self.position_v)
         self.position_h=self.overflow(1,increment_x,self.position_h)
@@ -516,7 +587,7 @@ class App(ttk.Frame):
         if init:
             self.clear()
             self.create_main_frame()
-
+            self.update()
 
         self.position_v=self.overflow(4,increment_y,self.position_v)
 
@@ -606,7 +677,7 @@ class App(ttk.Frame):
         if self.position_v == 4 and self.position_h == 3: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=2, column=4, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
-    def parametres_widgets(self):
+    def print_param(self):
         
         self.page[0] = "parametres"
           
@@ -619,9 +690,8 @@ class App(ttk.Frame):
         else:
             self.print_param_joy()
 
-    def recepteur_widgets(self):
-        # Create recepteur_widgets
-        self.page[0] = "receiver"
+    def print_info_robot(self):
+        self.page[0] = "robot"
                    
         self.create_main_frame()
                 
@@ -681,7 +751,7 @@ class App(ttk.Frame):
         )
         self.current.pack(ipadx=0, ipady=0)
         
-    def calibration_result(self,joy_x_min,joy_x_middle,joy_x_max,joy_y_min,joy_y_middle,joy_y_max):  
+    def print_calibration_result(self,joy_x_min,joy_x_middle,joy_x_max,joy_y_min,joy_y_middle,joy_y_max):  
         self.page = ["cal_auto","result"]
 
         self.clear()  
@@ -768,12 +838,12 @@ class App(ttk.Frame):
                     elif self.page[1] == "move_y":
                         Globale.joystick_y.calibration_max_min_joystick(7,self.compteur_str.set)
                         if self.page[1] == "move_y":
-                            self.calibration_result(Globale.joystick_x.min_value,Globale.joystick_x.middle_value,Globale.joystick_x.max_value,Globale.joystick_y.min_value,Globale.joystick_y.middle_value,Globale.joystick_y.max_value)
+                            self.print_calibration_result(Globale.joystick_x.min_value,Globale.joystick_x.middle_value,Globale.joystick_x.max_value,Globale.joystick_y.min_value,Globale.joystick_y.middle_value,Globale.joystick_y.max_value)
                             save_param()
 
     def manage_up_down(self,direction):        
         if self.page[0] == "menu":
-            self.menu_start(0,direction)       
+            self.print_menu_start(0,direction)       
         elif self.page[0] == "parametres":
             if self.page[1] == "joy":
                 self.print_param_joy(0,direction)
@@ -782,8 +852,12 @@ class App(ttk.Frame):
             elif self.page[1] == "normal":
                 self.print_param_mode_normal(0,direction,0)
 
-    def manage_L1_R1(self,direction):      
-        if self.page[0] == "parametres":
+    def manage_L1_R1(self,direction):  
+
+        if self.page[0] == "pilotage":
+            Globale.mode_robot = self.overflow(1,direction,Globale.mode_robot)
+
+        elif self.page[0] == "parametres":
 
             if self.page[1] == "joy" and direction == 1:
                 self.print_param_mode_marteau()
