@@ -28,6 +28,7 @@ class App(ttk.Frame):
         self.position_h = 0
         self.size_title=50
         self.size_item=40
+        self.fg_title="#56C7FC"
 
         # Create value lists
         self.page = ["",""]
@@ -63,10 +64,11 @@ class App(ttk.Frame):
         # Compteur variables
         self.compteur = 5
         self.compteur_str = tk.IntVar(value=str(self.compteur))
+
+        s = ttk.Style()
+        s.configure('my.TButton', font=('Helvetica', 50))
+        s.configure('Accent.TButton', font=('Helvetica', 50))
         
-        # Create widgets :
-        #self.emetteur_widgets()
-        #self.create_main_frame()
         self.print_menu_start()
      
     def overflow(self,limite,increment,value):
@@ -83,10 +85,13 @@ class App(ttk.Frame):
         if self.page[0] == "pilotage":
             if Globale.mode_robot == 0:
                 self.mode_robot.set(value="L1< NORMAL >R1")
+                self.label_mode_robot.config(fg="#3bfd00")
             elif Globale.mode_robot == 1:
                 self.mode_robot.set(value="L1< HAMMER >R1")
+                self.label_mode_robot.config(fg="#007cff")
             else:
                 self.mode_robot.set(value="L1< ERREUR >R1")
+                self.label_mode_robot.config(fg="#ff0000")
 
         elif self.page[0] == "controller":
             try :
@@ -193,17 +198,20 @@ class App(ttk.Frame):
             if self.page[1] == "joy":
                 if self.position_param ==0:
                     Globale.inverse["direction_speed"]= not Globale.inverse["direction_speed"]
-                    self.print_param_joy()
+                    if Globale.inverse["direction_speed"]==True:self.label_speed_dir_inv.configure(image=self.switch_on) 
+                    else :self.label_speed_dir_inv.configure(image=self.switch_off)
                     save_param()
-                if self.position_param ==1:
+                elif self.position_param ==1:
                     Globale.inverse["direction_steer"]= not Globale.inverse["direction_steer"]
-                    self.print_param_joy()
+                    if Globale.inverse["direction_steer"]==True:self.label_steer_dir_inv.configure(image=self.switch_on) 
+                    else :self.label_steer_dir_inv.configure(image=self.switch_off)
                     save_param()
-                if self.position_param ==2:
+                elif self.position_param ==2:
                     Globale.inverse["steer_speed"]= not Globale.inverse["steer_speed"]
-                    self.print_param_joy()
+                    if Globale.inverse["steer_speed"]==True:self.label_speed_steer_inv.configure(image=self.switch_on) 
+                    else :self.label_speed_steer_inv.configure(image=self.switch_off)
                     save_param()
-                if self.position_param ==3:
+                elif self.position_param ==3:
                     self.compteur_str.set(value=3)
                     self.calibration_auto("no_move_x")
             
@@ -260,45 +268,44 @@ class App(ttk.Frame):
               
     def print_info_pilotage(self):
         self.page[0] = "pilotage"
-        self.update()
 
         self.create_main_frame()
 
-        self.mode_frame = tk.Frame(self.main_frame)
-        self.mode_frame.grid(row=0, column=0, padx=0, pady=0, sticky="nsew")
-
-        # Create a Frame mode
-
-        self.labelwidget = ttk.Label(self.mode_frame, text="Mode", font=("-size", self.size_title,"-weight", "bold"))
-
-        self.label_frame = tk.LabelFrame(self.mode_frame, labelwidget=self.labelwidget,bd=5)
+        self.labelwidget = tk.Label(self.main_frame, text="Mode", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
+        
+        self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
         self.label_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
                 
-        self.label = ttk.Label(
+        self.label_mode_robot = tk.Label(
             self.label_frame,
             textvariable=self.mode_robot,
             justify="center",
             font=("-size", self.size_item, "-weight", "bold"),
         )
-        self.label.pack(ipadx=0, ipady=10)
+        self.label_mode_robot.pack(ipadx=0, ipady=0)
+
+        # Create a Frame mode
+
+        self.mode_frame = tk.Frame(self.main_frame)
+        self.mode_frame.grid(row=1, column=0, padx=0, pady=0, sticky="nsew")
 
         # Create a Frame battery
         
-        self.labelwidget = ttk.Label(self.mode_frame, text="Battery",  font=("-size", self.size_title,"-weight", "bold"),)
+        self.labelwidget = tk.Label(self.mode_frame, text="Battery",  font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
         
         self.label_frame = tk.LabelFrame(self.mode_frame, labelwidget=self.labelwidget, bd=5)
-        self.label_frame.grid(row=0, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.label_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
         self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
-        self.frame.grid(row=0, column=0, padx=(0, 0), pady=(20, 10), sticky="nsew")
+        self.frame.grid(row=0, column=0, padx=(0, 0), pady=(10, 10), sticky="nsew")
 
-        self.label = ttk.Label(self.frame,text="Robot",justify="center",font=("-size", self.size_item, "-weight", "bold"))
+        self.label = ttk.Label(self.frame,text="Robot",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=8,)
         self.label.pack(ipadx=0, ipady=10)        
-        self.label = ttk.Label(self.frame,text="Controller",justify="center",font=("-size", self.size_item, "-weight", "bold"))
+        self.label = ttk.Label(self.frame,text="Controller",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=8,)
         self.label.pack(ipadx=0, ipady=10)
 
         self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
-        self.frame.grid(row=0, column=2, padx=(0, 0), pady=(20, 10), sticky="nsew")
+        self.frame.grid(row=0, column=1, padx=(0, 0), pady=(20, 10), sticky="nsew")
 
         self.label = ttk.Label(self.frame,text="4.5V",justify="center",font=("-size", self.size_item, "-weight", "bold"))
         self.label.pack(ipadx=0, ipady=10)        
@@ -306,12 +313,37 @@ class App(ttk.Frame):
         self.label.pack(ipadx=0, ipady=10)
 
         self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
-        self.frame.grid(row=0, column=3, padx=(0, 0), pady=(20, 10), sticky="nsew")
+        self.frame.grid(row=0, column=2, padx=(0, 0), pady=(20, 10), sticky="nsew")
 
-        self.label_Y = tk.Label(self.frame, image=self.battery_100)
-        self.label_Y.pack(pady=15)
-        self.label_B = tk.Label(self.frame, image=self.battery_20)
-        self.label_B.pack(pady=15)
+        self.label_controller_bat = tk.Label(self.frame, image=self.battery_100)
+        self.label_controller_bat.pack(pady=10)
+        self.label_robot_bat = tk.Label(self.frame, image=self.battery_20)
+        self.label_robot_bat.pack(pady=10)
+
+        # Create a Frame Current
+
+        self.labelwidget = tk.Label(self.mode_frame, text="Current", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
+
+        self.label_frame = tk.LabelFrame(self.mode_frame, labelwidget=self.labelwidget,bd=5)
+        self.label_frame.grid(row=0, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
+                
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=0, padx=(0, 0), pady=(10, 10), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,text="right wheel",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=10,)
+        self.label.pack(ipadx=0, ipady=10)        
+        self.label = ttk.Label(self.frame,text="left wheel",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=10,)
+        self.label.pack(ipadx=0, ipady=10)
+
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=1, padx=(0, 0), pady=(20, 10), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,text="0.5A",justify="center",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.pack(ipadx=0, ipady=10)        
+        self.label = ttk.Label(self.frame,text="0.7A",justify="center",font=("-size", self.size_item, "-weight", "bold"))
+        self.label.pack(ipadx=0, ipady=10)
+
+        self.update()
 
     def print_info_controller(self):
         self.page[0] = "controller"
@@ -323,7 +355,7 @@ class App(ttk.Frame):
 
         # Create a Frame joystick read
         
-        self.labelwidget = ttk.Label(self.joy_frame, text="Joy read", font=("-size", self.size_title,"-weight", "bold"))
+        self.labelwidget = tk.Label(self.joy_frame, text="Joy read", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
         
         self.label_frame = tk.LabelFrame(self.joy_frame, labelwidget=self.labelwidget,bd=5)
         self.label_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
@@ -348,7 +380,7 @@ class App(ttk.Frame):
         
         # Create a Frame joystick send
         
-        self.labelwidget = ttk.Label(self.joy_frame, text="Joy send",  font=("-size", self.size_title,"-weight", "bold"),)
+        self.labelwidget = tk.Label(self.joy_frame, text="Joy send",  font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
         
         self.label_frame = tk.LabelFrame(self.joy_frame, labelwidget=self.labelwidget, bd=5)
         self.label_frame.grid(row=0, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
@@ -398,7 +430,7 @@ class App(ttk.Frame):
 
         # Create a Frame for button read
 
-        self.labelwidget = ttk.Label(self.main_frame, text="Button state",  font=("-size", self.size_title,"-weight", "bold"),)
+        self.labelwidget = tk.Label(self.main_frame, text="Button state",  font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
         
         self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget, bd=5)
         self.label_frame.grid(row=1, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
@@ -451,45 +483,35 @@ class App(ttk.Frame):
         self.label_R1 = tk.Label(self.frame, image=self.btn_off)
         self.label_R1.pack(pady=15)
             
-    def print_menu_start(self,init=1 ,increment=0):
+    def print_menu_start(self):
         self.page[0] = "menu"
         
-        if init:
-        
-            self.clear()
+        self.clear()
+            
+        # Create a canvas
+        self.canvas = tk.Canvas(self, width=800, height=500, bg="#e7e7e7")
+        self.canvas.pack(fill="both", expand=True)
 
-            s = ttk.Style()
-            s.configure('my.TButton', font=('Helvetica', 50))
-            s = ttk.Style()
-            s.configure('Accent.TButton', font=('Helvetica', 50))
+        # Set image in canvas
+        self.canvas.create_image(0,0, image=self.bg_img, anchor="nw")
             
-            # Create a canvas
-            self.canvas = tk.Canvas(self, width=800, height=500, bg="#e7e7e7")
-            self.canvas.pack(fill="both", expand=True)
-
-            # Set image in canvas
-            self.canvas.create_image(0,0, image=self.bg_img, anchor="nw")
-            
-        self.position_menu=self.overflow(3,increment,self.position_menu)
-            
-        btn = []
-        for i in range(4):
-            btn.append('my.TButton')
-            if self.position_menu == i:
-                btn[i] = 'Accent.TButton'
-        
+        self.button=[]
         # Buttons
-        self.button1 = ttk.Button(self, text="Mode pilotage",style=btn[0])
-        self.button2 = ttk.Button(self, text="Info controller",style=btn[1])
-        self.button3 = ttk.Button(self, text="Info robot",style=btn[2])        
-        self.button4 = ttk.Button(self, text="Parametres",style=btn[3])   
+        self.button.append(ttk.Button(self, text="Mode pilotage",style='my.TButton'))
+        self.button.append(ttk.Button(self, text="Info controller",style='my.TButton'))
+        self.button.append(ttk.Button(self, text="Info robot",style='my.TButton'))       
+        self.button.append(ttk.Button(self, text="Parametres",style='my.TButton'))  
 
-        self.canvas.create_window(1280/2, 200, anchor="center", window=self.button1)
-        self.canvas.create_window(1280/2, 300, anchor="center", window=self.button2)
-        self.canvas.create_window(1280/2, 400, anchor="center", window=self.button3)
-        self.canvas.create_window(1280/2, 500, anchor="center", window=self.button4)
+        for i in range(len(self.button)):
+            if self.position_menu == i:
+                self.button[i].configure(style='Accent.TButton')
+
+        self.canvas.create_window(1280/2, 200, anchor="center", window=self.button[0])
+        self.canvas.create_window(1280/2, 300, anchor="center", window=self.button[1])
+        self.canvas.create_window(1280/2, 400, anchor="center", window=self.button[2])
+        self.canvas.create_window(1280/2, 500, anchor="center", window=self.button[3])
         
-    def print_param_joy(self,init=1 ,increment=0):
+    def print_param_joy(self):
 
         self.page[1] = "joy"
 
@@ -500,29 +522,31 @@ class App(ttk.Frame):
         if Globale.inverse["steer_speed"]==True:speed_steer_inv =  self.switch_on
         else :speed_steer_inv=self.switch_off
 
-        if init:
-            self.clear()
-            self.create_main_frame()
+        self.clear()
+        self.create_main_frame()
 
-            # Create a Frame joystick param        
-            self.labelwidget = ttk.Label(self.main_frame, text="Joystick inverse", font=("-size", self.size_title,"-weight", "bold"))
-            self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
-            self.label_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew",ipadx=60,ipady=10)
+        # Create a Frame joystick param        
+        self.labelwidget = tk.Label(self.main_frame, text="Joystick inverse", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
+        self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
+        self.label_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew",ipadx=60,ipady=10)
                     
         self.frame = ttk.Frame(self.label_frame, padding=(20, 10))
         self.frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
 
-        self.position_param=self.overflow(3,increment,self.position_param)
+        self.label_switch_param_joy=[]
 
-        self.label = tk.Label(self.frame,text="Speed direction",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        if self.position_param == 0: self.label.config(bg= "#56C7FC", fg= "black")
-        self.label.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
-        self.label = tk.Label(self.frame,text="Steer direction",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        if self.position_param == 1: self.label.config(bg= "#56C7FC", fg= "black")
-        self.label.grid(row=1, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
-        self.label = tk.Label(self.frame,text="Speed <-> steer ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
-        if self.position_param == 2: self.label.config(bg= "#56C7FC", fg= "black")
-        self.label.grid(row=2, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
+        self.label_switch_param_joy.append(tk.Label(self.frame,text="Speed direction",justify="left",font=("-size", self.size_item, "-weight", "bold")))
+        self.label_switch_param_joy[0].grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
+
+        self.label_switch_param_joy.append(tk.Label(self.frame,text="Steer direction",justify="left",font=("-size", self.size_item, "-weight", "bold")))
+        self.label_switch_param_joy[1].grid(row=1, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
+
+        self.label_switch_param_joy.append(tk.Label(self.frame,text="Speed <-> steer ",justify="left",font=("-size", self.size_item, "-weight", "bold")))
+        self.label_switch_param_joy[2].grid(row=2, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
+
+        for i in range(len(self.label_switch_param_joy)):
+            if self.position_param == i: 
+                self.label_switch_param_joy[i].config(bg= "#56C7FC", fg= "black")
 
         self.frame = ttk.Frame(self.label_frame, padding=(20, 10))
         self.frame.grid(row=0, column=1, padx=(20, 10), pady=(20, 10), sticky="nsew")
@@ -533,14 +557,12 @@ class App(ttk.Frame):
         self.label_steer_dir_inv.pack(pady=15)
         self.label_speed_steer_inv = tk.Label(self.frame, image=speed_steer_inv)
         self.label_speed_steer_inv.pack(pady=15)
+             
+        self.button_calib_joy = ttk.Button(self.main_frame, text="Calibration joystick",style='my.TButton')
+        self.button_calib_joy.grid(row=1, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
 
         if self.position_param == 3:
-            btn = 'Accent.TButton'
-        else:
-            btn = 'my.TButton'
-             
-        self.button = ttk.Button(self.main_frame, text="Calibration joystick",style=btn)
-        self.button.grid(row=1, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
+            self.button_calib_joy.configure(style='Accent.TButton')
     
     def print_param_mode_normal(self,init=1 ,increment_y=0,increment_x=0):
         self.page[1] = "normal"
@@ -554,7 +576,7 @@ class App(ttk.Frame):
         self.position_h=self.overflow(1,increment_x,self.position_h)
 
         # Create a Frame        
-        self.labelwidget = ttk.Label(self.main_frame, text="Coeff mode normal", font=("-size", self.size_title,"-weight", "bold"))
+        self.labelwidget = tk.Label(self.main_frame, text="Coeff mode normal", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
         self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
         self.label_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew",ipadx=60,ipady=10)
 
@@ -598,7 +620,7 @@ class App(ttk.Frame):
 
 
         # Create a Frame        
-        self.labelwidget = ttk.Label(self.main_frame, text="Coeff mode marteau", font=("-size", self.size_title,"-weight", "bold"))
+        self.labelwidget = tk.Label(self.main_frame, text="Coeff mode marteau", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
         self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
         self.label_frame.grid(row=0, column=0, padx=(20, 10), pady=(10, 10), sticky="nsew",ipadx=60,ipady=0)
         
@@ -625,7 +647,7 @@ class App(ttk.Frame):
         self.label.grid(row=1, column=3, padx=(0), pady=(10, 10), sticky="nsew")   
 
         # Create a Frame        
-        self.labelwidget = ttk.Label(self.main_frame, text="PID", font=("-size", self.size_title,"-weight", "bold"))
+        self.labelwidget = tk.Label(self.main_frame, text="PID", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
         self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
         self.label_frame.grid(row=1, column=0, padx=(20, 10), pady=(10, 10), sticky="nsew",ipadx=60,ipady=10)
 
@@ -759,7 +781,7 @@ class App(ttk.Frame):
         
         # Create a Frame calibration_result_widgets
                      
-        self.labelwidget = ttk.Label(self.main_frame, text="Joystick X", font=("-size", self.size_title,"-weight", "bold"))
+        self.labelwidget = tk.Label(self.main_frame, text="Joystick X", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
         
         self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
         self.label_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
@@ -791,7 +813,7 @@ class App(ttk.Frame):
     
         # Create a Frame calibration_result_widgets
                      
-        self.labelwidget = ttk.Label(self.main_frame, text="Joystick Y", font=("-size", self.size_title,"-weight", "bold"))
+        self.labelwidget = tk.Label(self.main_frame, text="Joystick Y", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
         
         self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
         self.label_frame.grid(row=0, column=1, padx=(20, 10), pady=(20, 10), sticky="nsew")
@@ -843,10 +865,25 @@ class App(ttk.Frame):
 
     def manage_up_down(self,direction):        
         if self.page[0] == "menu":
-            self.print_menu_start(0,direction)       
+
+            self.position_menu=self.overflow(3,direction,self.position_menu)
+            for i in range(len(self.button)):
+                if self.position_menu == i:
+                    self.button[i].configure(style='Accent.TButton')
+                else:
+                    self.button[i].configure(style='my.TButton')
+                    
         elif self.page[0] == "parametres":
             if self.page[1] == "joy":
-                self.print_param_joy(0,direction)
+                self.position_param=self.overflow(3,direction,self.position_param)
+                for i in range(len(self.label_switch_param_joy)):
+                    self.label_switch_param_joy[i].config(bg= "#1c1c1c", fg= "white")
+                    self.button_calib_joy.configure(style='my.TButton')
+                    if self.position_param == i: 
+                        self.label_switch_param_joy[i].config(bg= "#56C7FC", fg= "black")
+                    elif self.position_param == 3:
+                        self.button_calib_joy.configure(style='Accent.TButton')
+
             elif self.page[1] == "hammer":
                 self.print_param_mode_marteau(0,direction,0)
             elif self.page[1] == "normal":
@@ -867,10 +904,10 @@ class App(ttk.Frame):
             elif self.page[1] == "hammer" and direction == 1:
                 self.print_param_mode_normal(1,0,0)
             elif self.page[1] == "hammer" and direction == -1:
-                self.print_param_joy(1,0)
+                self.print_param_joy()
 
             elif self.page[1] == "normal" and direction == 1:
-                self.print_param_joy(1,0)
+                self.print_param_joy()
             elif self.page[1] == "normal" and direction == -1:
                 self.print_param_mode_marteau(1,0,0)
 

@@ -18,7 +18,7 @@ def interrupt_pin(channel):
         print ("Falling edge detected on ",channel)
         
         if channel == Globale.BUTTON_PIN["START"] :
-            lcd.print_menu_start(1,0)
+            lcd.print_menu_start()
         elif channel == Globale.BUTTON_PIN["SELECT"] :            
             lcd.select()
         elif channel == Globale.BUTTON_PIN["R1"] :

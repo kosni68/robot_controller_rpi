@@ -52,11 +52,12 @@ class Joystick():
         self.min_value = min_value
 
     def scale_current_value(self,inverse_dir):
-        
+
+        return_value = round(self.resolution/2)
         self.current_read_value=self.ads1115.analog_read(self.port_ads)
         
         if self.current_read_value > self.middle_value - self.dead_zone and self.current_read_value < self.middle_value + self.dead_zone :
-            return round(self.resolution/2)
+            return return_value
         
         elif self.current_read_value > self.middle_value + self.dead_zone:
             return_value = self._map(self.current_read_value, self.middle_value + self.dead_zone,self.max_value,self.resolution/2,self.resolution)
