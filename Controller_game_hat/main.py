@@ -95,6 +95,7 @@ if __name__ == "__main__":
     root.tk.call("source", "/home/pi/Desktop/Sun-Valley-ttk-theme-master/sun-valley.tcl")
     root.tk.call("set_theme", "dark")
     root.attributes('-fullscreen', True)
+    root.config(cursor="none")
     root.bind('<Escape>', lambda e: root.destroy())
     
     lcd = App(root)

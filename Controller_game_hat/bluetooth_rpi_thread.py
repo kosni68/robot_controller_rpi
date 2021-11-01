@@ -44,7 +44,7 @@ class Bluetooth_rpi:
       print ("received", Bluetooth_rpi.data)
       
     def sendMessage():
-      Bluetooth_rpi.sock.send("joy:"+ str(Globale.joystick_current_value)+"btn:"+str(Globale.button_state))
+      Bluetooth_rpi.sock.send(Globale.data_to_send())
       #Bluetooth_rpi.sock.send("joy:"+ str(Globale.joystick_current_value))
       
     def lookUpNearbyBluetoothDevices():

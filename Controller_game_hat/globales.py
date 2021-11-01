@@ -1,4 +1,5 @@
 from joystick import *
+import json
 
 class Globale:
 
@@ -21,16 +22,6 @@ class Globale:
     "SELECT" : 4,
     "R1" : 18,
     "L1" : 23
-    }
-    
-    joystick_current_value = {
-    "X" : 512,
-    "Y" : 512
-    }
-    
-    joystick_current_value = {
-    "X" : 512,
-    "Y" : 512
     }
     
     button_state = {
@@ -85,9 +76,57 @@ class Globale:
     "steer_1" : 0
     }
 
-    mode_robot = 0 # 0=normal 1=hammer
+    mode_hammer_robot = 0 # 0=normal 1=hammer
 
     speed_value = 0
     speed_percentage=0
     steer_value =0
     steer_percentage=0
+
+    def data_to_send():
+
+        for i in Globale.button_state:
+            total_value_dict =+ Globale.button_state[i]
+
+        if Globale.mode_hammer_robot :
+
+            for i in Globale.P:
+                total_value_dict =+ Globale.P[i]
+            for i in Globale.I:
+                total_value_dict =+ Globale.I[i]
+            for i in Globale.D:
+                total_value_dict =+ Globale.D[i]
+            for i in Globale.coef_hammer:
+                total_value_dict =+ Globale.coef_hammer[i]
+
+            pid = {
+            "P" : Globale.P,
+            "I" : Globale.I,
+            "D" : Globale.D
+            }
+
+            mode = {
+            "hammer" : 1,
+            "pid" : pid,
+            "coef" : Globale.coef_hammer
+            }
+
+        else :
+
+            for i in Globale.coef_normal:
+                total_value_dict =+ Globale.coef_normal[i]
+
+            mode = {
+            "hammer" : 0,
+            "coef" : Globale.coef_normal
+            }
+            
+        checksum = Globale.speed_value+Globale.steer_value+total_value_dict
+
+        data = {"speed": Globale.speed_value,
+                "steer": Globale.steer_value,
+                "btn": Globale.button_state,
+                "mode": Globale.button_state,
+                "checksum": checksum,
+                }
+        return json.dumps(data)

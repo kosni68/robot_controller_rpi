@@ -29,7 +29,7 @@ class App(ttk.Frame):
         self.size_title=50
         self.size_item=40
         self.fg_title="#56C7FC"
-
+        self.bg_color ="#1c1c1c"
         # Create value lists
         self.page = ["",""]
         #self.page_list = ["menu", "controller","robot","parametres","cal_auto"]
@@ -51,7 +51,7 @@ class App(ttk.Frame):
         self.pid_i = [tk.StringVar(value="0"),tk.StringVar(value="0"),tk.StringVar(value="0"),tk.StringVar(value="0")]
         self.pid_d = [tk.StringVar(value="0"),tk.StringVar(value="0"),tk.StringVar(value="0"),tk.StringVar(value="0")]
 
-        self.mode_robot = tk.StringVar(value="")
+        self.mode_hammer_robot = tk.StringVar(value="")
 
         self.joy_real_x = tk.StringVar(value="X = ")
         self.joy_real_y = tk.StringVar(value="Y = ")
@@ -83,14 +83,14 @@ class App(ttk.Frame):
     def update(self):
 
         if self.page[0] == "pilotage":
-            if Globale.mode_robot == 0:
-                self.mode_robot.set(value="L1< NORMAL >R1")
+            if not Globale.mode_hammer_robot:
+                self.mode_hammer_robot.set(value="L1< NORMAL >R1")
                 self.label_mode_robot.config(fg="#3bfd00")
-            elif Globale.mode_robot == 1:
-                self.mode_robot.set(value="L1< HAMMER >R1")
+            elif Globale.mode_hammer_robot:
+                self.mode_hammer_robot.set(value="L1< HAMMER >R1")
                 self.label_mode_robot.config(fg="#007cff")
             else:
-                self.mode_robot.set(value="L1< ERREUR >R1")
+                self.mode_hammer_robot.set(value="L1< ERREUR >R1")
                 self.label_mode_robot.config(fg="#ff0000")
 
         elif self.page[0] == "controller":
@@ -155,14 +155,7 @@ class App(ttk.Frame):
 
         self.main_frame = ttk.Frame(self, padding=(10, 10))
         self.main_frame.pack(pady=10)
-        
-        # Create a main Fram        
-        #self.label_bg = ttk.Label(self, image=self.bg_img)
-        #self.label_bg.place(x=0, y=0)
-
-        #self.main_frame = ttk.Frame(self, padding=(20, 10))
-        #self.main_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
-        
+            
     def clear(self):
             
         try:    
@@ -278,7 +271,7 @@ class App(ttk.Frame):
                 
         self.label_mode_robot = tk.Label(
             self.label_frame,
-            textvariable=self.mode_robot,
+            textvariable=self.mode_hammer_robot,
             justify="center",
             font=("-size", self.size_item, "-weight", "bold"),
         )
@@ -683,7 +676,7 @@ class App(ttk.Frame):
         if self.position_v == 3 and self.position_h == 3: self.label.config(bg= "#56C7FC", fg= "black")
         self.label.grid(row=1, column=4, padx=(10, 10), pady=(10, 10), sticky="nsew")
         
-        
+
         self.label = ttk.Label(self.label_frame,text="D = ",justify="left",font=("-size", self.size_item, "-weight", "bold"))
         self.label.grid(row=2, column=0, padx=(20, 10), pady=(10, 10), sticky="nsew")    
         self.label = tk.Label(self.label_frame,textvariable=self.pid_d[0],justify="left",font=("-size", self.size_item, "-weight", "bold"))
@@ -724,14 +717,6 @@ class App(ttk.Frame):
             font=("-size", self.size_item, "-weight", "bold"),
         )
         self.current.pack(ipadx=600, ipady=0)
-        
-        self.batterie = ttk.Label(
-            self.main_frame,
-            textvariable=self.joy_posY,
-            justify="center",
-            font=("-size", self.size_item, "-weight", "bold"),
-        )
-        self.batterie.pack(ipadx=600, ipady=0)
         
     def calibration_auto(self,mode):
         self.page[0] = "cal_auto"
@@ -877,7 +862,7 @@ class App(ttk.Frame):
             if self.page[1] == "joy":
                 self.position_param=self.overflow(3,direction,self.position_param)
                 for i in range(len(self.label_switch_param_joy)):
-                    self.label_switch_param_joy[i].config(bg= "#1c1c1c", fg= "white")
+                    self.label_switch_param_joy[i].config(bg= self.bg_color, fg= "white")
                     self.button_calib_joy.configure(style='my.TButton')
                     if self.position_param == i: 
                         self.label_switch_param_joy[i].config(bg= "#56C7FC", fg= "black")
@@ -892,7 +877,7 @@ class App(ttk.Frame):
     def manage_L1_R1(self,direction):  
 
         if self.page[0] == "pilotage":
-            Globale.mode_robot = self.overflow(1,direction,Globale.mode_robot)
+            Globale.mode_hammer_robot = self.overflow(1,direction,Globale.mode_hammer_robot)
 
         elif self.page[0] == "parametres":
 
