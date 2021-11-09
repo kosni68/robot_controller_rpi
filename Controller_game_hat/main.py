@@ -9,17 +9,18 @@ def interrupt_pin(channel):
     
      #Callback fonction for each button and joystick
      
-    for item in Globale.BUTTON_PIN.items():
-        if channel == item[1] :
-            print("BUTTON_PIN : ",item[0])
+    for key,value in Globale.BUTTON_PIN.items():
+        if channel == value :
+            print("BUTTON_PIN : ",key)
     if GPIO.input(channel):       
         print ("Rising edge detected on ",channel)
     else:                  
         print ("Falling edge detected on ",channel)
         
         if channel == Globale.BUTTON_PIN["START"] :
+            Globale.acces_send_data=0
             lcd.print_menu_start()
-        elif channel == Globale.BUTTON_PIN["SELECT"] :            
+        elif channel == Globale.BUTTON_PIN["SELECT"] :
             lcd.select()
         elif channel == Globale.BUTTON_PIN["R1"] :
             lcd.manage_L1_R1(-1)
@@ -39,11 +40,11 @@ def _map(x, in_min, in_max, out_min, out_max):
 
 def read_button():
     # Read button state
-    for item in Globale.BUTTON_PIN.items():
-        if GPIO.input(item[1]) == True:
-            Globale.button_state[item[0]]=0
+    for key,value in Globale.BUTTON_PIN.items():
+        if GPIO.input(value) == True:
+            Globale.button_state[key]=0
         else:
-            Globale.button_state[item[0]]=1
+            Globale.button_state[key]=1
 
 def read_joystick():
     # Read joystick value
@@ -69,22 +70,22 @@ def setup():
     
     # Create interrupt event for each button and joystick
     
-    for item in Globale.BUTTON_PIN.items():
-         #print("item : ",item[1])
-        GPIO.setup(item[1], GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(item[1], GPIO.BOTH, callback=interrupt_pin, bouncetime=175)
+    for key,value in Globale.BUTTON_PIN.items():
+        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(value, GPIO.BOTH, callback=interrupt_pin, bouncetime=175)
             
-    for item in Globale.JOYSTICK_PIN.items():
-         #print("item : ",item[1])
-        GPIO.setup(item[1], GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(item[1], GPIO.BOTH, callback=interrupt_pin, bouncetime=75)
+    for key,value in Globale.JOYSTICK_PIN.items():
+        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(value, GPIO.BOTH, callback=interrupt_pin, bouncetime=75)
 
 def loop():
+
     while True:
         read_button()
         read_joystick()
         lcd.update()
         lcd.manage_mode()
+
         
 if __name__ == "__main__":
     
@@ -104,13 +105,13 @@ if __name__ == "__main__":
     th1 = threading.Thread(target=loop)
     th2 = threading.Thread(target=Bluetooth_rpi.run_server)
     th3 = threading.Thread(target=Bluetooth_rpi.run_client)
-    
+
     th1.start()
     th2.start()
     th3.start()
-    
+
     root.mainloop()
-    
+        
     th1.join()
     th2.join()
     th3.join()

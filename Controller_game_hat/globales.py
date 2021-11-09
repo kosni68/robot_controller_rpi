@@ -83,50 +83,76 @@ class Globale:
     steer_value =0
     steer_percentage=0
 
+    acces_send_data=0
+
     def data_to_send():
 
-        for i in Globale.button_state:
-            total_value_dict =+ Globale.button_state[i]
+        checksum =0
+        
+        if not Globale.acces_send_data:
+            return json.dumps("mode:pause")
 
         if Globale.mode_hammer_robot :
 
-            for i in Globale.P:
-                total_value_dict =+ Globale.P[i]
-            for i in Globale.I:
-                total_value_dict =+ Globale.I[i]
-            for i in Globale.D:
-                total_value_dict =+ Globale.D[i]
-            for i in Globale.coef_hammer:
-                total_value_dict =+ Globale.coef_hammer[i]
+            P=0
+            I=0
+            D=0
+
+            for var in ["1000","100","10","1"]:
+                P = P*10+Globale.P[var]
+            for var in ["1000","100","10","1"]:
+                I = I*10+Globale.I[var]
+            for var in ["1000","100","10","1"]:
+                D = D*10+Globale.D[var]
+
+            coef_speed = Globale.coef_hammer["speed_10"]*10+Globale.coef_hammer["speed_1"]
+            coef_steer = Globale.coef_hammer["steer_10"]*10+Globale.coef_hammer["steer_1"]
 
             pid = {
-            "P" : Globale.P,
-            "I" : Globale.I,
-            "D" : Globale.D
+            "P" : P,
+            "I" : I,
+            "D" : D
             }
 
             mode = {
             "hammer" : 1,
             "pid" : pid,
-            "coef" : Globale.coef_hammer
+            "coef_speed" : coef_speed,
+            "coef_steer" : coef_steer
             }
+
+            for key,value in pid.items():
+                checksum += value
 
         else :
 
-            for i in Globale.coef_normal:
-                total_value_dict =+ Globale.coef_normal[i]
+            coef_speed = Globale.coef_normal["speed_10"]*10+Globale.coef_normal["speed_1"]
+            coef_steer = Globale.coef_normal["steer_10"]*10+Globale.coef_normal["steer_1"]
 
             mode = {
             "hammer" : 0,
-            "coef" : Globale.coef_normal
+            "coef_speed" : coef_speed,
+            "coef_steer" : coef_steer
             }
-            
-        checksum = Globale.speed_value+Globale.steer_value+total_value_dict
+        
+
+        checksum += coef_speed+coef_steer
+        checksum += Globale.speed_value+Globale.steer_value
+       
+        btn = {"A": Globale.button_state["A"],
+                "B": Globale.button_state["B"],
+                "X": Globale.button_state["X"],
+                "Y": Globale.button_state["Y"],
+                }
+                
+        for key,value in btn.items():
+            checksum += value
 
         data = {"speed": Globale.speed_value,
                 "steer": Globale.steer_value,
-                "btn": Globale.button_state,
-                "mode": Globale.button_state,
+                "btn": btn,
+                "mode": mode,
                 "checksum": checksum,
                 }
+                
         return json.dumps(data)

@@ -117,8 +117,10 @@ class App(ttk.Frame):
             self.joy_speed_percent.set(value=str(Globale.speed_percentage)+"%")
             self.joy_real_x.set(value="X = "+str(Globale.joystick_x.current_read_value))
             self.joy_real_y.set(value="Y = "+str(Globale.joystick_y.current_read_value))
-            self.device_data.set(value=Bluetooth_rpi.data)
+            
 
+        elif self.page[0] == "robot":
+            self.device_data.set(value=Bluetooth_rpi.data)
     
         elif self.page[0] == "parametres":
 
@@ -179,12 +181,16 @@ class App(ttk.Frame):
         if self.page[0] == "menu":
             self.clear()
             if self.position_menu ==0:
+                Globale.acces_send_data=1
                 self.print_info_pilotage()
             elif self.position_menu ==1:
+                Globale.acces_send_data=1
                 self.print_info_controller()
             elif self.position_menu ==2:
+                Globale.acces_send_data=1
                 self.print_info_robot()
             elif self.position_menu ==3:
+                Globale.acces_send_data=0
                 self.print_param()
 
         elif self.page[0] == "parametres":
