@@ -4,6 +4,8 @@ import threading
 from tkinter_game_hat import *
 from globales import *
 from Config.config import *
+
+# beispiel anderungen
     
 def interrupt_pin(channel):
     
