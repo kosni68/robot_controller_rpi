@@ -13,7 +13,7 @@
 # connect B8:27:EB:A1:C0:9B
 
 import bluetooth
-import threading
+import json
 import time
 from globales import Globale
 
@@ -42,6 +42,7 @@ class Bluetooth_rpi:
     def receiveMessages():
       Bluetooth_rpi.data = Bluetooth_rpi.client_sock.recv(1024)
       print ("received", Bluetooth_rpi.data)
+      Globale.parse_feedback(Bluetooth_rpi.data)
       
     def sendMessage():
       Bluetooth_rpi.sock.send(Globale.data_to_send())
@@ -64,15 +65,10 @@ class Bluetooth_rpi:
                 while True:
                     Bluetooth_rpi.sendMessage()
                     time.sleep(0.01)
-            except:
-                print("Connection refused")
+            except Exception as e:
+                print("\033[91m"+"Connection refused"+str(e)+"\033[0m")
                 time.sleep(0.1)
                 
-    def run_client1():
-        Bluetooth_rpi.connection()
-        while True:
-            Bluetooth_rpi.sendMessage()
-            time.sleep(0.2)
     
     def cleanup():
         Bluetooth_rpi.client_sock.close()

@@ -59,7 +59,15 @@ class App(ttk.Frame):
         self.joy_steer = tk.StringVar(value="Steer = ")
         self.joy_speed_percent = tk.StringVar(value="")
         self.joy_steer_percent = tk.StringVar(value="")
-        self.device_data = tk.StringVar(value=str(Bluetooth_rpi.data))
+
+        self.feedback_cmd1 = tk.IntVar(value=0)
+        self.feedback_cmd2 = tk.IntVar(value=0)
+        self.feedback_speedR_meas = tk.IntVar(value=0)
+        self.feedback_speedL_meas = tk.IntVar(value=0)
+        self.feedback_batVoltage = tk.IntVar(value=0)
+        self.feedback_boardTemp = tk.IntVar(value=0)
+        self.feedback_Temperature = tk.IntVar(value=0)
+        self.feedback_cmdLed = tk.IntVar(value=0)
         
         # Compteur variables
         self.compteur = 5
@@ -118,9 +126,16 @@ class App(ttk.Frame):
             self.joy_real_x.set(value="X = "+str(Globale.joystick_x.current_read_value))
             self.joy_real_y.set(value="Y = "+str(Globale.joystick_y.current_read_value))
             
-
         elif self.page[0] == "robot":
-            self.device_data.set(value=Bluetooth_rpi.data)
+            
+            self.feedback_cmd1.set(value=Globale.hoverboard_feed_back["cmd1"])
+            self.feedback_cmd2.set(value=Globale.hoverboard_feed_back["cmd2"])
+            self.feedback_speedR_meas.set(value=Globale.hoverboard_feed_back["speedR_meas"])
+            self.feedback_speedL_meas.set(value=Globale.hoverboard_feed_back["speedL_meas"])
+            self.feedback_batVoltage.set(value=Globale.hoverboard_feed_back["batVoltage"])
+            self.feedback_boardTemp.set(value=Globale.hoverboard_feed_back["boardTemp"])
+            self.feedback_Temperature.set(value=Globale.hoverboard_feed_back["Temperature"])
+            self.feedback_cmdLed.set(value=Globale.hoverboard_feed_back["cmdLed"])
     
         elif self.page[0] == "parametres":
 
@@ -716,13 +731,60 @@ class App(ttk.Frame):
                    
         self.create_main_frame()
                 
-        self.current = ttk.Label(
-            self.main_frame,
-            textvariable=self.device_data,
-            justify="center",
-            font=("-size", self.size_item, "-weight", "bold"),
-        )
-        self.current.pack(ipadx=600, ipady=0)
+        # Create a Frame Feedback
+
+        self.labelwidget = tk.Label(self.main_frame, text="Feedback", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
+
+        self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
+        self.label_frame.grid(row=0, column=1, padx=(0, 10), pady=(10, 10), sticky="nsew")
+                
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=0, padx=(0, 0), pady=(10, 10), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,text="Cmd1: ",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)        
+        self.label = ttk.Label(self.frame,text="Cmd2:",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)
+        self.label = ttk.Label(self.frame,text="speedR: ",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)        
+        self.label = ttk.Label(self.frame,text="speedL:",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)    
+        
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=2, padx=(0, 0), pady=(10, 10), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,text="batVoltage: ",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=10,)
+        self.label.pack(ipadx=0, ipady=10)        
+        self.label = ttk.Label(self.frame,text="boardTemp:",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=10,)
+        self.label.pack(ipadx=0, ipady=10)       
+        self.label = ttk.Label(self.frame,text="Temp:",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=10,)
+        self.label.pack(ipadx=0, ipady=10)       
+        self.label = ttk.Label(self.frame,text="cmdLed:",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=10,)
+        self.label.pack(ipadx=0, ipady=10)
+
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=1, padx=(0, 0), pady=(20, 10), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,textvariable=self.feedback_cmd1,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)        
+        self.label = ttk.Label(self.frame,textvariable=self.feedback_cmd2,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)
+        self.label = ttk.Label(self.frame,textvariable=self.feedback_speedR_meas,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)        
+        self.label = ttk.Label(self.frame,textvariable=self.feedback_speedL_meas,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)
+
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=4, padx=(0, 0), pady=(20, 10), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,textvariable=self.feedback_batVoltage,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)        
+        self.label = ttk.Label(self.frame,textvariable=self.feedback_boardTemp,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)
+        self.label = ttk.Label(self.frame,textvariable=self.feedback_Temperature,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)        
+        self.label = ttk.Label(self.frame,textvariable=self.feedback_cmdLed,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)
         
     def calibration_auto(self,mode):
         self.page[0] = "cal_auto"
@@ -854,7 +916,7 @@ class App(ttk.Frame):
                             self.print_calibration_result(Globale.joystick_x.min_value,Globale.joystick_x.middle_value,Globale.joystick_x.max_value,Globale.joystick_y.min_value,Globale.joystick_y.middle_value,Globale.joystick_y.max_value)
                             save_param()
 
-    def manage_up_down(self,direction):        
+    def manage_up_down(self,direction):
         if self.page[0] == "menu":
 
             self.position_menu=self.overflow(3,direction,self.position_menu)
@@ -880,7 +942,7 @@ class App(ttk.Frame):
             elif self.page[1] == "normal":
                 self.print_param_mode_normal(0,direction,0)
 
-    def manage_L1_R1(self,direction):  
+    def manage_L1_R1(self,direction):
 
         if self.page[0] == "pilotage":
             Globale.mode_hammer_robot = self.overflow(1,direction,Globale.mode_hammer_robot)

@@ -85,6 +85,17 @@ class Globale:
 
     acces_send_data=0
 
+    hoverboard_feed_back = {
+    "cmd1" : 0,
+    "cmd2" : 0,
+    "speedR_meas" : 0,
+    "speedL_meas" : 0,
+    "batVoltage" : 0,
+    "boardTemp" : 0,
+    "Temperature" : 0,
+    "cmdLed" : 0
+    }
+
     def data_to_send():
 
         checksum =0
@@ -156,3 +167,18 @@ class Globale:
                 }
                 
         return json.dumps(data)
+                      
+    def parse_feedback(str_feedback):
+        str_feedback=json.loads(str_feedback.decode("utf-8")) 
+        print("str_feedback",str_feedback)
+        
+        #feedback_item = ['"cmd1":','"cmd2":','"speedR_meas":','"speedL_meas":','"batVoltage":','"boardTemp":','"Temperature":','"cmdLed":']
+        
+        #for index in range(0,len(feedback_item)):
+            #if str_feedback.find(feedback_item[index]) == - 1:
+                #return "feedback False"
+        
+        Globale.hoverboard_feed_back=str_feedback
+
+        print("Globale.hoverboard_feed_back:",Globale.hoverboard_feed_back)
+        
