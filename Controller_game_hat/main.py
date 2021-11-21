@@ -4,8 +4,6 @@ import threading
 from tkinter_game_hat import *
 from globales import *
 from Config.config import *
-
-# beispiel anderungen
     
 def interrupt_pin(channel):
     
@@ -52,14 +50,14 @@ def read_joystick():
     # Read joystick value
     if Globale.inverse["steer_speed"]:
         Globale.speed_value = Globale.joystick_x.scale_current_value(Globale.inverse["direction_speed"])
-        Globale.speed_percentage = _map(Globale.speed_value,0,Globale.joystick_x.resolution,-100,100)
+        Globale.speed_percentage = _map(Globale.speed_value,-Globale.joystick_x.resolution,Globale.joystick_x.resolution,-100,100)
         Globale.steer_value = Globale.joystick_y.scale_current_value(Globale.inverse["direction_steer"])
-        Globale.steer_percentage = _map(Globale.steer_value,0,Globale.joystick_y.resolution,-100,100)
+        Globale.steer_percentage = _map(Globale.steer_value,-Globale.joystick_x.resolution,Globale.joystick_y.resolution,-100,100)
     else:
         Globale.speed_value = Globale.joystick_y.scale_current_value(Globale.inverse["direction_speed"])
-        Globale.speed_percentage = _map(Globale.speed_value,0,Globale.joystick_y.resolution,-100,100)
+        Globale.speed_percentage = _map(Globale.speed_value,-Globale.joystick_x.resolution,Globale.joystick_y.resolution,-100,100)
         Globale.steer_value = Globale.joystick_x.scale_current_value(Globale.inverse["direction_steer"])
-        Globale.steer_percentage = _map(Globale.steer_value,0,Globale.joystick_x.resolution,-100,100)
+        Globale.steer_percentage = _map(Globale.steer_value,-Globale.joystick_x.resolution,Globale.joystick_x.resolution,-100,100)
 
 def setup():
     try :
@@ -97,7 +95,7 @@ if __name__ == "__main__":
     root.title("Controller robot")
     root.tk.call("source", "/home/pi/Desktop/Sun-Valley-ttk-theme-master/sun-valley.tcl")
     root.tk.call("set_theme", "dark")
-    root.attributes('-fullscreen', True)
+    root.attributes('-fullscreen', True) #1280x720
     root.config(cursor="none")
     root.bind('<Escape>', lambda e: root.destroy())
     
@@ -118,7 +116,7 @@ if __name__ == "__main__":
     th2.join()
     th3.join()
     
-    Bluetooth_rpi.device.cleanup
+    Bluetooth_rpi.cleanup
     
 
 

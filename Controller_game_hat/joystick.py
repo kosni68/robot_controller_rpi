@@ -7,8 +7,8 @@ class Joystick():
         self.ads1115 = ADS1115(address)
         self.current_read_value = 0
         self.max_value = resolution
-        self.min_value = 0
-        self.middle_value = resolution/2
+        self.min_value = -resolution
+        self.middle_value = 0
         self.dead_zone = dead_zone
         self.resolution = resolution
         self.port_ads = port_ads
@@ -53,21 +53,21 @@ class Joystick():
 
     def scale_current_value(self,inverse_dir):
 
-        return_value = round(self.resolution/2)
+        return_value = 0
         self.current_read_value=self.ads1115.analog_read(self.port_ads)
         
         if self.current_read_value > self.middle_value - self.dead_zone and self.current_read_value < self.middle_value + self.dead_zone :
             return return_value
         
         elif self.current_read_value > self.middle_value + self.dead_zone:
-            return_value = self._map(self.current_read_value, self.middle_value + self.dead_zone,self.max_value,self.resolution/2,self.resolution)
+            return_value = self._map(self.current_read_value, self.middle_value + self.dead_zone,self.max_value,0,self.resolution)
             if (return_value > self.resolution):
                 return_value = self.resolution
             
         elif self.current_read_value < self.middle_value - self.dead_zone:
-            return_value = self._map(self.current_read_value, self.middle_value - self.dead_zone,self.min_value,self.resolution/2,0)
-            if (return_value < 0):
-                return_value = 0
+            return_value = self._map(self.current_read_value, self.middle_value - self.dead_zone,self.min_value,0,-self.resolution)
+            if (return_value < -self.resolution):
+                return_value = -self.resolution
                 
         if inverse_dir:
             return_value=self.resolution-return_value

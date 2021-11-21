@@ -3,8 +3,8 @@ import json
 
 class Globale:
 
-    joystick_x = Joystick(0x4A,0,0x7FFF,500)# ads_i2c_adress,port,resolution send,dead_zone
-    joystick_y = Joystick(0x4A,1,0x7FFF,500)# ads_i2c_adress,port,resolution send,dead_zone
+    joystick_x = Joystick(0x4A,0,1000,500)# ads_i2c_adress,port,resolution send,dead_zone
+    joystick_y = Joystick(0x4A,1,1000,500)# ads_i2c_adress,port,resolution send,dead_zone
     
     JOYSTICK_PIN = {
     "UP" : 5,

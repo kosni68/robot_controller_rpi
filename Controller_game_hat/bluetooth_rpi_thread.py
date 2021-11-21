@@ -9,8 +9,8 @@
 # default-agent
 # discoverable on
 # scan on
-# trust B8:27:EB:08:8F:C2
-# connect B8:27:EB:08:8F:C2
+# trust B8:27:EB:A1:C0:9B
+# connect B8:27:EB:A1:C0:9B
 
 import bluetooth
 import threading
@@ -23,7 +23,7 @@ class Bluetooth_rpi:
     sock = None
     data = None
     port = 1
-    targetBluetoothMacAddress="B8:27:EB:08:8F:C2"
+    targetBluetoothMacAddress="B8:27:EB:A1:C0:9B"
     
     def connection():
         Bluetooth_rpi.sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
@@ -63,10 +63,10 @@ class Bluetooth_rpi:
                 Bluetooth_rpi.connection()
                 while True:
                     Bluetooth_rpi.sendMessage()
-                    time.sleep(0.1)
+                    time.sleep(0.01)
             except:
                 print("Connection refused")
-                time.sleep(2)
+                time.sleep(0.1)
                 
     def run_client1():
         Bluetooth_rpi.connection()
