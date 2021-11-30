@@ -68,6 +68,8 @@ class App(ttk.Frame):
         self.feedback_boardTemp = tk.IntVar(value=0)
         self.feedback_Temperature = tk.IntVar(value=0)
         self.feedback_cmdLed = tk.IntVar(value=0)
+        self.imu_roll = tk.IntVar(value=0)
+        self.imu_pitch = tk.IntVar(value=0)
         
         # Compteur variables
         self.compteur = 5
@@ -136,6 +138,9 @@ class App(ttk.Frame):
             self.feedback_boardTemp.set(value=Globale.hoverboard_feed_back["boardTemp"])
             self.feedback_Temperature.set(value=Globale.hoverboard_feed_back["Temperature"])
             self.feedback_cmdLed.set(value=Globale.hoverboard_feed_back["cmdLed"])
+
+            self.imu_roll.set(value=Globale.hoverboard_feed_back["Roll"])
+            self.imu_pitch.set(value=Globale.hoverboard_feed_back["Pitch"])
     
         elif self.page[0] == "parametres":
 
@@ -736,10 +741,10 @@ class App(ttk.Frame):
         self.labelwidget = tk.Label(self.main_frame, text="Feedback", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
 
         self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
-        self.label_frame.grid(row=0, column=1, padx=(0, 10), pady=(10, 10), sticky="nsew")
+        self.label_frame.grid(row=0, column=0, padx=(0, 10), pady=(0, 10), sticky="nsew")
                 
         self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
-        self.frame.grid(row=0, column=0, padx=(0, 0), pady=(10, 10), sticky="nsew")
+        self.frame.grid(row=0, column=0, padx=(0, 0), pady=(0, 0), sticky="nsew")
 
         self.label = ttk.Label(self.frame,text="Cmd1: ",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
         self.label.pack(ipadx=0, ipady=10)        
@@ -751,7 +756,7 @@ class App(ttk.Frame):
         self.label.pack(ipadx=0, ipady=10)    
         
         self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
-        self.frame.grid(row=0, column=2, padx=(0, 0), pady=(10, 10), sticky="nsew")
+        self.frame.grid(row=0, column=2, padx=(0, 0), pady=(0, 0), sticky="nsew")
 
         self.label = ttk.Label(self.frame,text="batVoltage: ",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=10,)
         self.label.pack(ipadx=0, ipady=10)        
@@ -763,7 +768,7 @@ class App(ttk.Frame):
         self.label.pack(ipadx=0, ipady=10)
 
         self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
-        self.frame.grid(row=0, column=1, padx=(0, 0), pady=(20, 10), sticky="nsew")
+        self.frame.grid(row=0, column=1, padx=(0, 0), pady=(0, 0), sticky="nsew")
 
         self.label = ttk.Label(self.frame,textvariable=self.feedback_cmd1,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
         self.label.pack(ipadx=0, ipady=10)        
@@ -775,7 +780,7 @@ class App(ttk.Frame):
         self.label.pack(ipadx=0, ipady=10)
 
         self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
-        self.frame.grid(row=0, column=4, padx=(0, 0), pady=(20, 10), sticky="nsew")
+        self.frame.grid(row=0, column=4, padx=(0, 0), pady=(0, 0), sticky="nsew")
 
         self.label = ttk.Label(self.frame,textvariable=self.feedback_batVoltage,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
         self.label.pack(ipadx=0, ipady=10)        
@@ -786,6 +791,37 @@ class App(ttk.Frame):
         self.label = ttk.Label(self.frame,textvariable=self.feedback_cmdLed,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
         self.label.pack(ipadx=0, ipady=10)
         
+        # Create a Frame IMU
+
+        self.labelwidget = tk.Label(self.main_frame, text="IMU", font=("-size", self.size_title,"-weight", "bold"),fg=self.fg_title)
+
+        self.label_frame = tk.LabelFrame(self.main_frame, labelwidget=self.labelwidget,bd=5)
+        self.label_frame.grid(row=1, column=0, padx=(0, 10), pady=(10, 10), sticky="nsew")
+                
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=0, padx=(0, 0), pady=(0, 0), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,text="Roll: ",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)  
+
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=1, padx=(0, 0), pady=(0, 0), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,textvariable=self.imu_roll,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)   
+
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=2, padx=(0, 0), pady=(0, 0), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,text="Pitch: ",justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)   
+
+        self.frame = ttk.Frame(self.label_frame, padding=(10, 10))
+        self.frame.grid(row=0, column=3, padx=(0, 0), pady=(0, 0), sticky="nsew")
+
+        self.label = ttk.Label(self.frame,textvariable=self.imu_pitch,justify="center",font=("-size", self.size_item, "-weight", "bold"),width=7,)
+        self.label.pack(ipadx=0, ipady=10)   
+
     def calibration_auto(self,mode):
         self.page[0] = "cal_auto"
         self.page[1] = mode

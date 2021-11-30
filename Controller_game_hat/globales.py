@@ -93,7 +93,9 @@ class Globale:
     "batVoltage" : 0,
     "boardTemp" : 0,
     "Temperature" : 0,
-    "cmdLed" : 0
+    "cmdLed" : 0,
+    "Roll" : 0,
+    "Pitch" : 0
     }
 
     def data_to_send():
@@ -169,7 +171,12 @@ class Globale:
         return json.dumps(data)
                       
     def parse_feedback(str_feedback):
-        str_feedback=json.loads(str_feedback.decode("utf-8")) 
+        try:
+            str_feedback=json.loads(str_feedback.decode("utf-8")) 
+        except Exception as e:
+            print("\033[91m"+"str_feedback error"+str(e)+"\033[0m")
+            time.sleep(0.1)
+
         print("str_feedback",str_feedback)
         
         #feedback_item = ['"cmd1":','"cmd2":','"speedR_meas":','"speedL_meas":','"batVoltage":','"boardTemp":','"Temperature":','"cmdLed":']

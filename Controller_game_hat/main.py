@@ -103,7 +103,9 @@ if __name__ == "__main__":
     lcd.pack(fill="both", expand=True)
       
     th1 = threading.Thread(target=loop)
+           
     th2 = threading.Thread(target=Bluetooth_rpi.run_server)
+
     th3 = threading.Thread(target=Bluetooth_rpi.run_client)
 
     th1.start()
