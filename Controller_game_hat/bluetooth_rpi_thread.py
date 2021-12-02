@@ -17,6 +17,9 @@ import json
 import time
 from globales import Globale
 
+from print_debug import *
+bluetooth_print = print_debug("BLUETOOTH",33)
+
 class Bluetooth_rpi:
     server_sock = None
     client_sock = None
@@ -31,17 +34,17 @@ class Bluetooth_rpi:
         print ("connected")
 
     def start_server():
-        print ("server run")
+        bluetooth_print.info("server run")
         Bluetooth_rpi.server_sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
         Bluetooth_rpi.server_sock.bind(("",Bluetooth_rpi.port))
         Bluetooth_rpi.server_sock.listen(1)
 
         Bluetooth_rpi.client_sock,address = Bluetooth_rpi.server_sock.accept()
-        print ("Accepted connection from " + str(address))
+        bluetooth_print.info("Accepted connection from " + str(address))
 
     def receiveMessages():
       Bluetooth_rpi.data = Bluetooth_rpi.client_sock.recv(1024)
-      print ("received", Bluetooth_rpi.data)
+      bluetooth_print.info("received " + str(Bluetooth_rpi.data))
       Globale.parse_feedback(Bluetooth_rpi.data)
       
     def sendMessage():
@@ -51,7 +54,7 @@ class Bluetooth_rpi:
     def lookUpNearbyBluetoothDevices():
       nearby_devices = bluetooth.discover_devices()
       for bdaddr in nearby_devices:
-        print (str(bluetooth.lookup_name( bdaddr )) + " [" +bdaddr+ "]")
+        bluetooth_print.info(str(bluetooth.lookup_name( bdaddr )) + " [" +bdaddr+ "]")
 
     def run_server():
         Bluetooth_rpi.start_server()
@@ -66,7 +69,7 @@ class Bluetooth_rpi:
                     Bluetooth_rpi.sendMessage()
                     time.sleep(0.01)
             except Exception as e:
-                print("\033[91m"+"Connection refused"+str(e)+"\033[0m")
+                bluetooth_print.error("Connection refused " + str(e))
                 time.sleep(0.1)
                 
     
