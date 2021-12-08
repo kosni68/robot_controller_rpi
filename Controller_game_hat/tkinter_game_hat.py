@@ -4,7 +4,7 @@ from globales import *
 from bluetooth_rpi_thread import *
 from Config.config import *
 
-class App(ttk.Frame):
+class Tkinter_app(ttk.Frame):
     
     def __init__(self, parent):
         ttk.Frame.__init__(self)
