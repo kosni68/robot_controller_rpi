@@ -15,18 +15,18 @@ class print_debug:
         self.REVERSE = "\x1b[07m"
         self.RESET = "\x1b[0m"
 
-    def debug(self,text):
-        print(self.color_name + self.name +"[DEBUG]" + text + self.RESET)
+    def debug(self,text,arg2=""):
+        print(self.color_name + self.name +"[DEBUG]" + text + str(arg2) + self.RESET)
 
-    def info(self,text):
-        print(self.color_name + self.name + self.GREEN +"[INFO]" + text + self.RESET)
+    def info(self,text,arg2=""):
+        print(self.color_name + self.name + self.GREEN +"[INFO]" + self.RESET + text + str(arg2))
 
-    def warning(self,text):
-        print(self.color_name + self.name + self.YELLOW +"[WARNING]" + text + self.RESET)
+    def warning(self,text,arg2=""):
+        print(self.color_name + self.name + self.YELLOW +"[WARNING]" + text + str(arg2) + self.RESET)
 
-    def error(self,text):
-        print(self.color_name + self.name + self.RED +"[ERROR]" + text + self.RESET)
+    def error(self,text,arg2=""):
+        print(self.color_name + self.name + self.RED +"[ERROR]" + text + str(arg2) + self.RESET)
 
-    def critical(self,text):
-        print(self.color_name + self.name + self.BOLD_RED +"[CRITICAL]" + text + self.RESET)
+    def critical(self,text,arg2=""):
+        print(self.color_name + self.name + self.BOLD_RED +"[CRITICAL]" + text + str(arg2) + self.RESET)
 

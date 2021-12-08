@@ -4,6 +4,10 @@ import threading
 from tkinter_game_hat import *
 from globales import *
 from Config.config import *
+
+from print_debug import *
+pin_print = print_debug("PIN",36)
+config_print = print_debug("CONFIG",35)
     
 def interrupt_pin(channel):
     
@@ -11,11 +15,11 @@ def interrupt_pin(channel):
      
     for key,value in Globale.BUTTON_PIN.items():
         if channel == value :
-            print("BUTTON_PIN : ",key)
+            pin_print.info("BUTTON_PIN : ",key)
     if GPIO.input(channel):       
-        print ("Rising edge detected on ",channel)
+        pin_print.info("Rising edge detected on ",channel)
     else:                  
-        print ("Falling edge detected on ",channel)
+        pin_print.info("Falling edge detected on ",channel)
         
         if channel == Globale.BUTTON_PIN["START"] :
             Globale.acces_send_data=0
@@ -62,8 +66,9 @@ def read_joystick():
 def setup():
     try :
         load_param()
-    except:
-        print("Erreur load_param")
+        config_print.info("loading param sucess")
+    except Exception as e:
+        config_print.error("Error load_param",e)
         
     GPIO.setwarnings(True)
     GPIO.setmode(GPIO.BCM)
