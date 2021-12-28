@@ -69,12 +69,13 @@ def loop():
         lcd.manage_mode()
 
 def main():
-
+    udp_client=Udp_client()
+    
     setup()
     
     th1 = threading.Thread(target=loop)
-    th2 = threading.Thread(target=Bluetooth_rpi.run_server)
-    th3 = threading.Thread(target=Bluetooth_rpi.run_client)
+    th2 = threading.Thread(target=udp_client.sendMessage)
+    th3 = threading.Thread(target=udp_client.receiveMessages)
 
     th1.start()
     th2.start()
@@ -86,8 +87,6 @@ def main():
     th2.join()
     th3.join()
     
-    Bluetooth_rpi.cleanup
-        
 if __name__ == "__main__":
     
     root = tk.Tk()

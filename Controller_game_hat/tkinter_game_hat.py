@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from globales import *
-from bluetooth_rpi_thread import *
+from udp_client import *
 from Config.config import *
 
 class Tkinter_app(ttk.Frame):
