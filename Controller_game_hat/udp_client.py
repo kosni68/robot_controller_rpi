@@ -10,14 +10,11 @@ class Udp_client:
         # Create UDP socket client
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-    def sendMessage(self):
-        while True:
-            msg_to_send = str.encode(Globale.data_to_send())
-            self.sock.sendto(msg_to_send, self.addrPort)
-            time.sleep(0.01)
+    def sendMessage(self,data):
+        msg_to_send = str.encode(data)
+        self.sock.sendto(msg_to_send, self.addrPort)
+        time.sleep(0.01)
 
     def receiveMessages(self):
-        while True:
-            receive_msg = self.sock.recvfrom(self.bufferSize)
-            print(receive_msg[0])
-            Globale.parse_feedback(receive_msg[0])
+        receive_msg = self.sock.recvfrom(self.bufferSize)
+        return receive_msg[0]

@@ -68,14 +68,22 @@ def loop():
         lcd.update()
         lcd.manage_mode()
 
+def loop_send_message():
+    while True:
+        udp_client.sendMessage(Globale.data_to_send())
+
+def loop_receive_message():
+    while True:
+        receive_msg=udp_client.receiveMessages()
+        Globale.parse_feedback(receive_msg)
+
 def main():
-    udp_client=Udp_client()
     
     setup()
     
     th1 = threading.Thread(target=loop)
-    th2 = threading.Thread(target=udp_client.sendMessage)
-    th3 = threading.Thread(target=udp_client.receiveMessages)
+    th2 = threading.Thread(target=loop_send_message)
+    th3 = threading.Thread(target=loop_receive_message)
 
     th1.start()
     th2.start()
@@ -99,6 +107,8 @@ if __name__ == "__main__":
 
     lcd = Tkinter_app(root)
     lcd.pack(fill="both", expand=True)
+
+    udp_client=Udp_client()
 
     try:
         main()
