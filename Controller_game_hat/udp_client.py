@@ -14,11 +14,10 @@ class Udp_client:
         while True:
             msg_to_send = str.encode(Globale.data_to_send())
             self.sock.sendto(msg_to_send, self.addrPort)
-            time.sleep(0.05)
+            time.sleep(0.01)
 
     def receiveMessages(self):
         while True:
-            msg_server = self.sock.recvfrom(self.bufferSize)
-            receive_msg = "Message du serveur {}".format(msg_server[0])
-            print(receive_msg)
-            time.sleep(0.1)
+            receive_msg = self.sock.recvfrom(self.bufferSize)
+            print(receive_msg[0])
+            Globale.parse_feedback(receive_msg[0])

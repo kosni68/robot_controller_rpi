@@ -103,7 +103,7 @@ class Globale:
         checksum =0
         
         if not Globale.acces_send_data:
-            return json.dumps("mode:pause")
+            return json.dumps({"mode":"pause"})
 
         if Globale.mode_hammer_robot :
 
@@ -174,10 +174,9 @@ class Globale:
         try:
             str_feedback=json.loads(str_feedback.decode("utf-8")) 
         except Exception as e:
-            print("\033[91m"+"str_feedback error"+str(e)+"\033[0m")
-            time.sleep(0.1)
+            print("\033[91m"+"str_feedback error "+str(e)+"\033[0m")
 
-        print("str_feedback",str_feedback)
+        #print("str_feedback",str_feedback)
         
         #feedback_item = ['"cmd1":','"cmd2":','"speedR_meas":','"speedL_meas":','"batVoltage":','"boardTemp":','"Temperature":','"cmdLed":']
         
