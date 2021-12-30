@@ -129,7 +129,7 @@ class Tkinter_app(ttk.Frame):
             self.joy_real_y.set(value="Y = "+str(Globale.joystick_y.current_read_value))
             
         elif self.page[0] == "robot":
-            
+
             self.feedback_cmd1.set(value=Globale.hoverboard_feed_back["cmd1"])
             self.feedback_cmd2.set(value=Globale.hoverboard_feed_back["cmd2"])
             self.feedback_speedR_meas.set(value=Globale.hoverboard_feed_back["speedR_meas"])

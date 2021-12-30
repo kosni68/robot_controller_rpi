@@ -14,13 +14,13 @@ def create_interrupt_pin():
     
     for key,value in Globale.BUTTON_PIN.items():
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(value, GPIO.BOTH, callback=interrupt_pin, bouncetime=175)
+        GPIO.add_event_detect(value, GPIO.BOTH, callback=callback_interrupt_pin, bouncetime=175)
             
     for key,value in Globale.JOYSTICK_PIN.items():
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(value, GPIO.BOTH, callback=interrupt_pin, bouncetime=75)
+        GPIO.add_event_detect(value, GPIO.BOTH, callback=callback_interrupt_pin, bouncetime=75)
 
-def interrupt_pin(channel):
+def callback_interrupt_pin(channel):
     
      #Callback fonction for each button and joystick
      

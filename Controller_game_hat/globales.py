@@ -178,13 +178,16 @@ class Globale:
 
         #print("str_feedback",str_feedback)
         
-        #feedback_item = ['"cmd1":','"cmd2":','"speedR_meas":','"speedL_meas":','"batVoltage":','"boardTemp":','"Temperature":','"cmdLed":']
+        feedback_item = ["cmd1","cmd2","speedR_meas","speedL_meas","batVoltage","boardTemp","Temperature","cmdLed","Roll","Pitch"]
         
-        #for index in range(0,len(feedback_item)):
-            #if str_feedback.find(feedback_item[index]) == - 1:
-                #return "feedback False"
-        
-        Globale.hoverboard_feed_back=str_feedback
+        for element in feedback_item:
+            try:
+                Globale.hoverboard_feed_back[element]=str_feedback[element]
+            except KeyError :
+                Globale.hoverboard_feed_back[element]="false"
+            except Exception as e:
+                print("\033[91m"+"str_feedback error "+str(e)+"\033[0m")
 
-        print("Globale.hoverboard_feed_back:",Globale.hoverboard_feed_back)
+        
+        #print("Globale.hoverboard_feed_back:",Globale.hoverboard_feed_back)
         
