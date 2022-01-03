@@ -178,7 +178,7 @@ class Globale:
 
         #print("str_feedback",str_feedback)
         
-        feedback_item = ["cmd1","cmd2","speedR_meas","speedL_meas","batVoltage","boardTemp","Temperature","cmdLed","Roll","Pitch"]
+        feedback_item = ["cmd1","cmd2","speedR","speedL","batVoltage","boardTemp","Temperature","cmdLed","Roll","Pitch"]
         
         for element in feedback_item:
             try:

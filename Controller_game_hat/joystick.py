@@ -70,7 +70,7 @@ class Joystick():
                 return_value = -self.resolution
                 
         if inverse_dir:
-            return_value=self.resolution-return_value
+            return_value=-return_value
             
         return return_value
             
